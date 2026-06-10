@@ -8,5 +8,7 @@ Rows: 5088 result attempts; evals: 106; model-harness pairs: 16.
 
 Balanced design: 318 attempts per model-harness pair.
 
+Task categories from: `eval_task_categories.tsv`
+
 These files are derived summary tables used by the manuscript. They do not
 include the raw downloaded trajectory or result JSON cache.

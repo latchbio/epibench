@@ -49,18 +49,18 @@ result JSONs in a balanced three-replicate design: 106 evaluations for each of
 \par}
 
 \begin{center}
-  \includegraphics[width=0.94\textwidth]{figures/topline/figA_pass_rate_by_model.pdf}
+  \includegraphics[width=0.94\textwidth]{figures/fig1a.pdf}
 
   \vspace{0.18in}
 
-  \begin{minipage}[t]{0.485\textwidth}
+  \begin{minipage}[t]{0.62\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{figures/topline/figB_pass_rate_by_kit_task.pdf}
+    \includegraphics[width=\linewidth]{figures/fig1b.pdf}
   \end{minipage}
   \hfill
-  \begin{minipage}[t]{0.485\textwidth}
+  \begin{minipage}[t]{0.36\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{figures/topline/figC_pass_rate_vs_runtime.pdf}
+    \includegraphics[width=\linewidth]{figures/fig1c.pdf}
   \end{minipage}
 
   \captionof{figure}{\textbf{Topline benchmark performance.}
@@ -204,8 +204,6 @@ metric-definition mismatch, and prior-driven biological overinterpretation.
 \end{multicols}
 }
 
-\clearpage
-
 \section[Motivating Example: One Local Decision Can Change the Answer]{Motivating Example: One Local Decision Can Change\\ the Answer}
 
 {\fontsize{9.1}{12.8}\selectfont
@@ -284,19 +282,18 @@ which local decision broke when the endpoint answer was wrong.
 \end{multicols}
 }
 
-\clearpage
-
 \section{Evaluation Inventory}
 
 {\fontsize{9.1}{12.8}\selectfont
-The benchmark covers four assay labels and six task families. CUT\&Tag/CUT\&RUN
-tasks are drawn from zebrafish chromatin workflow snapshots and emphasize
-quality control, differential chromatin or expression summaries,
-normalization, and one clustering task. ATAC-seq tasks cover B-ALL and
-cold-response analyses, while ChIP-seq tasks focus on quality-control and
-differential histone-mark summaries. Methylation tasks are dominated by
-GSE149608 and GSE149609 outputs, including CpG reports, coverage tables,
-noncanonical methylation checks, and differential methylation summaries.
+The benchmark covers four assay types and eight task categories.
+CUT\&Tag/CUT\&RUN tasks are drawn from zebrafish chromatin workflow snapshots
+and span chromatin state analysis, QC, peak calling, secondary analysis,
+genomic annotation, alignment, and visualization. ATAC-seq tasks cover B-ALL
+and cold-response analyses, with secondary analysis dominating. ChIP-seq
+tasks include peak calling, chromatin state analysis, QC, genomic annotation,
+and secondary analysis. Methylation tasks are derived from GSE149608 and
+GSE149609, covering QC, secondary analysis, genomic annotation, and
+differential methylation.
 \par}
 
 \begin{center}
@@ -305,49 +302,43 @@ noncanonical methylation checks, and differential methylation summaries.
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}
                 >{\centering\arraybackslash}p{0.055\linewidth}
                 >{\raggedright\arraybackslash}p{0.25\linewidth}
-                >{\raggedright\arraybackslash}p{0.33\linewidth}
-                >{\raggedright\arraybackslash}p{0.13\linewidth}@{}}
+                >{\raggedright\arraybackslash}p{0.42\linewidth}@{}}
 \toprule
-Assay label & Evals & Sources & Task families & Horizon \\
+Assay type & Evals & Sources & Task categories \\
 \midrule
 CUT\&Tag/CUT\&RUN &
 47 &
 Zebrafish chromatin workflow snapshots &
-QC (29), differential analysis (14), normalization (3), clustering (1) &
-Small (47) \\
+Chromatin state (12), QC (10), peak calling (9), secondary analysis (7), genomic annotation (5), alignment (3), visualization (1) \\
 \addlinespace
 ATAC-seq &
 24 &
 B-ALL ATAC, cold-response ATAC &
-Differential analysis (19), QC (4), dimensionality reduction (1) &
-Small (24) \\
+Secondary analysis (17), chromatin state (2), peak calling (2), QC (2), genomic annotation (1) \\
 \addlinespace
 ChIP-seq &
 10 &
 ChIP-seq workflow snapshots &
-QC (8), differential analysis (2) &
-Small (9), long (1) \\
+Peak calling (3), chromatin state (2), QC (2), secondary analysis (2), genomic annotation (1) \\
 \addlinespace
-DNA methylation &
+Methylation-seq &
 25 &
 GSE149608, GSE149609 &
-Differential analysis (18), QC (6), spatial analysis (1) &
-Long (25) \\
+QC (8), secondary analysis (8), genomic annotation (5), differential methylation (4) \\
 \bottomrule
 \end{tabular}
 \captionof{table}{\textbf{Evaluation inventory.}
-The short-horizon epigenomics benchmark groups evaluations by assay label while
-varying the source workflow, task family, and expected answer surface within
-each group.}
+The benchmark groups evaluations by assay type while varying the source
+workflow, task category, and expected answer surface within each group.}
 \label{tab:evaluation-inventory}
 \end{center}
 
 {\fontsize{8.3}{11.4}\selectfont
-Across all 106 evaluations, 47 are QC tasks, 53 are differential-analysis
-tasks, 3 are normalization tasks, and one each tests dimensionality reduction,
-clustering, and spatial analysis. The updated result manifest contains 5,088
-valid trajectories from 16 model-harness pairs, with exactly 318 attempts per
-model-harness pair.
+Across all 106 evaluations, 34 are secondary analysis tasks, 22 are QC, 16
+are chromatin state analysis, 14 are peak calling, 12 are genomic annotation,
+4 are differential methylation, 3 are alignment, and 1 is visualization. The
+updated result manifest contains 5,088 valid trajectories from 16
+model-harness pairs, with exactly 318 attempts per model-harness pair.
 \par}
 
 \StartBody
@@ -366,30 +357,24 @@ attempts (42.1\%; 36.8--47.6). Claude Opus 4.8 Max / Pi and Claude Opus 4.8 /
 Claude Code both passed 126/318 attempts (39.6\%).
 
 The updated manifest is balanced: each model-harness pair contributes three
-rounds for each of 106 evaluations. The middle panel of
-Figure~\ref{fig:main-results-summary} therefore matches the full parsed
-set rather than a smaller sensitivity subset. The practical interpretation is
-unchanged from the earlier draft but sharper: GPT-5.5 / Pi is the descriptive
-leader, while the nearby systems form a leading tier whose Wilson intervals
-overlap.
+rounds for each of 106 evaluations. The practical interpretation is that
+GPT-5.5 / Pi is the descriptive leader, while the nearby systems form a
+leading tier whose Wilson intervals overlap substantially.
 
 \EndBody
 
 \begin{center}
-  \includegraphics[width=0.94\textwidth]{figures/results/main_results_summary.pdf}
+  \includegraphics[width=0.58\textwidth]{figures/fig4a.pdf}\hfill
+  \includegraphics[width=0.38\textwidth]{figures/fig4c.pdf}
 
-  \captionof{figure}{\textbf{Endpoint success across balanced model-harness
-  coverage.} Left: pass rate by model-harness pair across all 5,088 parsed
-  attempts. Middle: the same balanced 318-attempt design displayed as a
-  shared-instance check. Right: evaluation-level replicate statistics,
-  reporting the fraction of attempted evaluations with at least one passing
-  attempt, a majority of passing attempts, or all available attempts passing.
-  Wilson intervals summarize run-level uncertainty and do not account for
-  evaluation-level clustering.}
+  \captionof{figure}{\textbf{Endpoint success across model-harness pairs.}
+  Left: run-level pass rate by model-harness pair across all 5,088 parsed
+  attempts with Wilson confidence intervals.
+  Right: evaluation-level replicate statistics, reporting the fraction of
+  attempted evaluations with at least one passing attempt, a majority of
+  passing attempts, or all available attempts passing.}
   \label{fig:main-results-summary}
 \end{center}
-
-\vspace{0.08in}
 
 \begin{center}
 {\fontsize{4.85}{6.0}\selectfont
@@ -427,8 +412,6 @@ the recorded result duration.}
 \label{tab:model-results}
 \end{center}
 
-\clearpage
-
 \StartBody
 
 \subsection{Assay source stratifies difficulty more clearly than horizon labels}
@@ -442,36 +425,33 @@ sharper split within these assay labels: GSE149608 methylation tasks passed at
 12/48 (25.0\%). Cold-response ATAC tasks passed at 147/576 (25.5\%), while
 B-ALL ATAC-prefix tasks passed at 116/576 (20.1\%).
 
-Task family alone was less informative. Differential-analysis tasks passed at
-962/2,544 attempts (37.8\%), while QC tasks passed at 662/2,256 (29.3\%).
+Task family alone was less informative. Secondary analysis tasks passed at
+approximately one-third of attempts, while QC tasks passed at a similar rate.
 However, the same nominal task family behaved differently across assay
-contexts: CUT\&Tag/CUT\&RUN differential-analysis tasks passed at 356/672
-attempts (53.0\%), while ATAC-seq differential-analysis tasks passed at
-238/912 (26.1\%). Agents are therefore not simply failing broad task types;
-they are sensitive to the representation, comparator, and denominator
-conventions of particular epigenomics workflows.
+contexts: CUT\&Tag/CUT\&RUN secondary analysis tasks passed at higher rates
+than ATAC-seq secondary analysis tasks. Agents are therefore not simply
+failing broad task types; they are sensitive to the representation,
+comparator, and denominator conventions of particular epigenomics workflows.
 
-The horizon label should be interpreted cautiously. Long-horizon evaluations
-passed at 429/1,248 attempts (34.4\%) versus 1,243/3,840 (32.4\%) for
-small-horizon evaluations, but the long group is almost entirely methylation:
-all 25 methylation evaluations are long horizon, whereas all CUT\&Tag/CUT\&RUN
-and ATAC-seq evaluations are small horizon and only one ChIP-seq evaluation is
-long horizon (Figure~\ref{fig:source-horizon-summary}). The small
-long-horizon advantage is consequently a source-composition effect rather than
-evidence that longer tasks are intrinsically easier.
+The nominal horizon label (short vs.\ long) is almost entirely confounded with
+assay type: all CUT\&Tag/CUT\&RUN and ATAC-seq evaluations are short horizon,
+while all methylation evaluations are long horizon. Any apparent difference in
+pass rate between horizon groups is therefore a source-composition effect
+rather than evidence that task duration drives difficulty
+(Figure~\ref{fig:source-horizon-summary}).
 
 \EndBody
 
 \begin{center}
-  \includegraphics[width=0.88\textwidth]{figures/results/source_and_horizon_summary.pdf}
+  \includegraphics[width=0.27\textwidth]{figures/fig5a.pdf}\hfill
+  \includegraphics[width=0.44\textwidth]{figures/fig5b.pdf}\hfill
+  \includegraphics[width=0.27\textwidth]{figures/fig5c.pdf}
 
-  \captionof{figure}{\textbf{Performance varies by source workflow and is
-  confounded with horizon.} Left: pass rate by source prefix with run-level
-  Wilson intervals. Middle: source-by-task pass-rate heatmap; cell text reports
-  pass rate and evaluation count. Right: horizon composition by source prefix.
-  Long-horizon evaluations are mostly methylation/GSE149608, so the higher
-  long-horizon pass rate should not be interpreted as evidence that longer
-  tasks are intrinsically easier.}
+  \captionof{figure}{\textbf{Performance varies by assay type and task
+  category.} Left: pass rate by assay type with run-level Wilson intervals.
+  Middle: assay-by-task-category pass-rate heatmap; cell text reports pass
+  rate. Right: evaluation count by assay type, showing the unbalanced
+  inventory composition.}
   \label{fig:source-horizon-summary}
 \end{center}
 
@@ -507,24 +487,37 @@ Field scores show that many failures occur at the final conjunction of
 components. Across all 5,088 runs, endpoint pass/fail was exactly equivalent
 to all component fields passing. The weighted field-level pass rate was
 69.6\%, while endpoint pass rate was 32.9\%. This gap was largest for
-ATAC-seq dimensionality reduction, CUT\&Tag/CUT\&RUN normalization, ATAC-seq
-QC, CUT\&Tag/CUT\&RUN clustering, CUT\&Tag/CUT\&RUN QC, and ATAC-seq
-differential-analysis tasks. These results indicate that many agents recover
-substantial local structure but miss one required field, comparator,
-denominator, or answer-surface constraint.
+ATAC-seq secondary analysis, CUT\&Tag/CUT\&RUN chromatin state analysis,
+ATAC-seq QC, CUT\&Tag/CUT\&RUN peak calling, and methylation-seq genomic
+annotation tasks. These results indicate that many agents recover substantial
+local structure but miss one required field, comparator, denominator, or
+answer-surface constraint.
 
 \EndBody
 
+\clearpage
+
 \begin{center}
-  \includegraphics[width=0.92\textwidth]{figures/results/partial_credit_failure_diagnostics.pdf}
+  \includegraphics[width=0.92\textwidth]{figures/fig6a.pdf}
+
+  \vspace{0.12in}
+
+  \begin{minipage}[t]{0.485\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig6b.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.485\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig6c.pdf}
+  \end{minipage}
 
   \captionof{figure}{\textbf{Endpoint failures often contain substantial
-  partial progress.} Left: endpoint pass rate and field-level pass rate by assay
-  and task family. Top right: evaluation-level difficulty spectrum, with
-  endpoint pass rate and field-level pass rate shown for each evaluation.
-  Bottom right: annotated failure-mode severity; dot size indicates the number
-  of uniquely annotated evaluations. Field scores and failure annotations are
-  diagnostics, not replacement benchmark scores.}
+  partial progress.} Top: endpoint pass rate and field-level pass rate by assay
+  and task family (dumbbell chart). Bottom left: evaluation-level difficulty
+  spectrum, with endpoint and field-level pass rate for each evaluation.
+  Bottom right: annotated failure-mode pass rates. Field scores and failure
+  annotations are diagnostics, not replacement benchmark scores.}
   \label{fig:partial-credit-failure-diagnostics}
 \end{center}
 
@@ -577,12 +570,14 @@ and comparator choice. These are precisely the local decisions that determine
 whether an epigenomics analysis is trustworthy.
 
 The benchmark has several limitations. The updated manifest is balanced across
-model-harness pairs, but the task inventory is still not balanced across assay
-families: CUT\&Tag/CUT\&RUN and methylation contribute more evaluations than
-ChIP-seq, and QC plus differential-analysis tasks dominate the inventory.
-Finally, deterministic graders intentionally
-constrain the answer surface; they are useful for measurement, but they do not
-capture every scientifically valid analysis path.
+model-harness pairs, but the task inventory is not balanced across assay
+families: CUT\&Tag/CUT\&RUN (47 evaluations) and methylation-seq (25)
+contribute more evaluations than ChIP-seq (10), and secondary analysis plus
+QC tasks dominate the inventory. The nominal horizon label is fully confounded
+with assay type and should not be interpreted independently. Finally,
+deterministic graders intentionally constrain the answer surface; they are
+useful for measurement, but they do not capture every scientifically valid
+analysis path.
 
 \section{Methods}
 
