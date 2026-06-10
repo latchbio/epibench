@@ -2,6 +2,8 @@
 \documentclass[10pt,letterpaper]{article}
 
 \usepackage{epigenetics-preprint}
+\definecolor{newtext}{HTML}{C0392B}
+\newcommand{\new}[1]{{\color{newtext}#1}}
 
 \preprintKicker{bioRxiv preprint}
 \preprintCategory{Computational Biology}
@@ -433,6 +435,21 @@ than ATAC-seq secondary analysis tasks. Agents are therefore not simply
 failing broad task types; they are sensitive to the representation,
 comparator, and denominator conventions of particular epigenomics workflows.
 
+\new{Methylation-seq evaluations present a distinctive failure profile.
+Despite a moderate aggregate pass rate (33.3\%), the underlying trap
+structure is sharply bimodal. Strand-merging evaluations fail at 99\% across
+all models, while genome-build and annotation evaluations pass at 60--84\%.
+Two methodology traps are unique to the WGBS platform: array-era
+effect-size thresholds ($|\Delta\beta| \geq 0.2$) applied to whole-genome
+data silently destroy statistical power, producing 3$\times$ fewer DMCs
+because the filtered results are a strict subset of correct results with no
+warning raised. Genome-build mismatch (hg19 vs hg38) shifts gene positions
+by hundreds of base pairs with no tool crash --- agents must chain provenance
+reasoning (paper $\rightarrow$ GEO $\rightarrow$ aligner $\rightarrow$ build)
+rather than defaulting to the latest assembly. These ``silent catastrophe''
+traps --- where the output looks plausible but is wrong --- are
+disproportionately represented in the methylation evaluations.}
+
 The nominal horizon label (short vs.\ long) is almost entirely confounded with
 assay type: all CUT\&Tag/CUT\&RUN and ATAC-seq evaluations are short horizon,
 while all methylation evaluations are long horizon. Any apparent difference in
@@ -541,6 +558,128 @@ co-annotated evaluations appear in multiple rows of the failure-mode summary.
 We therefore treat the taxonomy as a diagnostic sample of recurring traps
 rather than a complete decomposition of benchmark error.
 
+\new{\subsection{The decision layer, not computation, is the bottleneck}}
+
+\new{Trajectory inspection reveals that the leading model (GPT-5.5) frequently
+computes the correct answer and then discards it. In one CUT\&RUN spike-in
+evaluation, a trajectory computed the correct normalization factor (0.0030)
+using the appropriate \texttt{--very-sensitive-local} alignment mode, then
+submitted the default end-to-end result (0.0004) --- the agent had the correct
+number in hand but lacked the domain prior to commit to it. In an H3K4me3
+promoter evaluation, a trajectory computed the correct gene-TSS $\pm$2\,kb
+result, then deliberately switched to a wider transcript-TSS $\pm$3\,kb
+variant at the write step, failing by 0.034.}
+
+\new{This ``explored correct, then discarded'' pattern reframes the
+field-level vs endpoint gap: the bottleneck for frontier models is principled
+selection among self-generated alternatives, not arithmetic or tool
+invocation. The benchmark therefore measures scientific judgment at the moment
+of committing an answer. Weaker models' failures are expected to migrate
+leftward (cannot compute at all), producing the progressive-difficulty
+gradient needed for model separation.}
+
+\new{\subsection{Correlated trap clusters structure the difficulty landscape}}
+
+\new{A small number of recurring scientific-judgment traps drive
+discrimination across large evaluation clusters. The CUT\&RUN spike-in
+alignment mode (Bowtie2 \texttt{--local} vs end-to-end) is the active
+discriminator in $\sim$15 evaluations: single-end spike-in reads with adapter
+contamination achieve 99.5\% alignment under local mode but only 6\% under
+end-to-end, producing a 16$\times$ read loss that corrupts all downstream
+normalization. A model that lacks this single domain prior fails the entire
+cluster simultaneously.}
+
+\new{The WGBS strand-merging trap illustrates how a single
+data-representation error cascades into an entire evaluation cluster. Bismark
+reports each CpG dinucleotide as two rows (+ strand at position $N$, $-$
+strand at $N\!+\!1$). Failing to merge before computing coverage drops CpG
+retention from 69\% to 21\% at a 10$\times$ threshold --- a 3.3-fold loss
+that corrupts 7 downstream evaluations at 99\% failure rate. The threshold
+sits exactly at the per-strand mean ($\sim$6.7$\times$), maximizing damage.
+Critically, Bismark's XM tag spawns three \emph{independent} trap families
+from the same output: context filtering (including CpG in conversion-rate
+computation drops the apparent rate from 99.5\% to $\sim$95\%, crossing the
+QC pass/fail threshold), strand merging (this cluster), and context-aware
+concordance (including non-CpG contexts inflates within-read epiallele
+discordance from 36\% to 59\%). Agents that learn the fix for one may still
+fail the others.}
+
+\new{The ATAC-seq Tn5 insertion-site BED workflow presents a third cluster:
+agents that feed paired-end BAMs directly to MACS3 with \texttt{-f BAMPE}
+produce $\sim$10$\times$ fewer peaks than the canonical two-step insertion-site
+extraction, cascading through consensus construction, motif enrichment, and
+multi-omic integration evaluations.}
+
+\new{This correlation structure means aggregate pass rates partially reflect
+``how many evaluations test the same underlying decision.'' This is a feature
+of realistic workflows --- correlated failure modes are how real analyses
+break --- but it should be acknowledged when interpreting per-evaluation
+independence.}
+
+\new{\subsection{Six failure tiers emerge from trap taxonomy}}
+
+\new{Cross-assay trap analysis reveals a structured difficulty hierarchy.
+Six trap categories defeat nearly all agents ($>$85\% failure rate):
+strand-merging (99\%), differential methodology requiring dual FC\,+\,FDR
+thresholds (99\%), signal-source column substitution (91\%), super-enhancer
+recipe forks (90\%), detection bias mistaken for biology (86\%), and QC metric
+interpretation (100\%). These represent traps where no current model has the
+domain knowledge to avoid the error.}
+
+\new{Discriminative traps (50--85\% failure) separate frontier from
+non-frontier models: multi-omic integration (76\%), depth confounding (67\%),
+peak-calling format selection (66\%), spatial heterogeneity of cancer
+methylation (60\%), motif enrichment interpretation (55\%), non-CpG context
+contamination (54\%), and prior-driven assertion (52\%). Moderate traps
+($<$50\% failure) include genome-build inference (44\%) and Polycomb
+cell-line selection (48\%), where most frontier models succeed.}
+
+\new{\subsection{Multi-omic integration is the largest failure mode by volume}}
+
+\new{Across 13 ATAC-seq cold-start evaluations requiring genuine RNA+ATAC
+pairing, 435 of 574 attempts failed (75.8\%). These evaluations test whether
+agents can integrate paired multi-omic data while preserving subtype
+structure. The central failure: pooling molecular subtypes before computing
+associations attenuates real signal, inflates apparent universal hubs, and
+distorts private subtype-specific regulatory programs. Building one
+cohort-wide hub ranking and labeling subtypes afterward collapses private
+subtype programs into an apparent universal signal. No model-harness pair
+reliably handles this class of evaluation.}
+
+\new{\subsection{Prior-driven assertion is the most heterogeneous trap}}
+
+\new{The prior-driven assertion category has an aggregate failure rate of
+52\% but ranges from 0\% to 100\% per evaluation. At one extreme, the
+largest H3K27ac super-enhancer sits beside a non-coding antisense locus, not
+a canonical B-ALL driver --- every model asserts the famous oncogene without
+computing the ranking (0\% pass). At the other extreme, HINT-ATAC
+footprinting is computation-friendly and passes at 100\%.}
+
+\new{Methylation evaluations provide the clearest examples of prior override.
+The canonical ``hypomethylation = activation'' model is so embedded in
+training data that agents report $<$10\% downregulated genes without checking,
+when the actual figure is $\sim$30\% for C4 cluster genes. The gene-body
+methylation-expression correlation ($r \approx 0.149$) is 2.7$\times$
+stronger than the promoter correlation ($r \approx 0.056$), yet agents
+default to promoter analysis because the textbook focuses exclusively on
+promoter methylation. The eval tolerance window firmly rejects the promoter
+value, forcing exploration beyond the obvious. Cancer hypermethylation
+preferentially targets ancestral Polycomb/bivalent domains --- loci marked by
+EZH2 in stem cells --- but agents that use differentiated-cell references
+(K562) instead of embryonic stem cells (H1-hESC) observe only $\sim$4--6$\times$
+enrichment instead of the correct $\sim$34$\times$. The spatial distribution
+contradicts textbook expectations: heterochromatin is \emph{depleted} for
+hypermethylation (0.1--0.3$\times$ fold), not enriched, because cancer
+methylation targets Polycomb regions while heterochromatin undergoes global
+hypomethylation.}
+
+\new{This heterogeneity means prior-driven assertion is not uniformly hard.
+It depends on whether the correct answer contradicts well-known biology
+(hard) versus merely requires computation the model has not memorized (easy).
+The benchmark isolates this axis: in both cases the agent must interact with
+the provided data, but the ``prior override'' evaluations additionally
+require the agent to trust its computation over its training distribution.}
+
 \subsection{Runtime failures are not the dominant error mode}
 
 Among parsed result JSONs, no trajectory reports a timeout or detected
@@ -569,15 +708,46 @@ model-harness pairs remain sensitive to representation, metric definition,
 and comparator choice. These are precisely the local decisions that determine
 whether an epigenomics analysis is trustworthy.
 
+\new{The trap taxonomy clarifies what the benchmark measures. Agents can run
+Bowtie2, MACS2, Picard, and HOMER correctly --- they fail at choosing
+\texttt{--local} vs \texttt{end-to-end}, \texttt{-f BAMPE} vs \texttt{-f BAM},
+\texttt{--broad} vs narrow, or the appropriate \texttt{--keep-dup} setting.
+The bottleneck is domain-specific parameter selection that requires
+understanding \emph{why} the tool behaves differently for a given mark or
+assay, not \emph{how} to invoke it. This positions the benchmark as a test of
+scientific judgment rather than tool proficiency.}
+
+\new{Three cross-assay failure patterns generalize beyond epigenomics: (1)
+prior-driven assertion --- asserting from training data rather than computing
+from provided files; (2) depth and normalization confounding --- equalizing
+after feature detection rather than before; and (3) format/mode selection ---
+the same tool flag producing opposite errors depending on assay context
+(e.g., \texttt{-f BAMPE} inflates CUT\&Tag peaks by 25--75\% but deflates
+ATAC-seq peaks by $\sim$10$\times$). These are not epigenomics-specific;
+any scientific benchmark involving bioinformatics tools will encounter agents
+that know tool syntax but not parameter semantics.}
+
+\new{The progressive-difficulty design is validated by the trap analysis.
+Procedural evaluations saturate at the ceiling model (100\% pass, requiring
+hardening), scientific-judgment evaluations discriminate (30--50\% pass at
+ceiling), and conceptual-biology evaluations defeat all models (0\% pass,
+probing future capability). As weaker models are tested, failures should
+migrate from the decision layer (``computed correctly but chose wrong'') to
+the computation layer (``cannot compute at all''), producing the graduated
+difficulty curve needed for meaningful model separation.}
+
 The benchmark has several limitations. The updated manifest is balanced across
 model-harness pairs, but the task inventory is not balanced across assay
 families: CUT\&Tag/CUT\&RUN (47 evaluations) and methylation-seq (25)
 contribute more evaluations than ChIP-seq (10), and secondary analysis plus
 QC tasks dominate the inventory. The nominal horizon label is fully confounded
-with assay type and should not be interpreted independently. Finally,
-deterministic graders intentionally constrain the answer surface; they are
-useful for measurement, but they do not capture every scientifically valid
-analysis path.
+with assay type and should not be interpreted independently. \new{The
+correlation structure of trap clusters means aggregate scores partially
+reflect repeated tests of the same underlying decision; this mirrors real
+workflow failure modes but should be acknowledged when interpreting
+per-evaluation independence.} Finally, deterministic graders intentionally
+constrain the answer surface; they are useful for measurement, but they do not
+capture every scientifically valid analysis path.
 
 \section{Methods}
 
