@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="475.2pt" height="169.2pt" viewBox="0 0 475.2 169.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-06-10T19:38:03.386482</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.8, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 169.2 
+L 475.2 169.2 
+L 475.2 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="text_1">
+    <g id="patch_2">
+     <path d="M 56.551989 49.92352 
+L 96.129771 49.92352 
+Q 96.413271 49.92352 96.413271 49.64002 
+L 96.413271 34.28318 
+Q 96.413271 33.99968 96.129771 33.99968 
+L 56.551989 33.99968 
+Q 56.268489 33.99968 56.268489 34.28318 
+L 56.268489 49.64002 
+Q 56.268489 49.92352 56.551989 49.92352 
+z
+" style="fill: #7267c8; stroke: #7267c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(57.654489 40.172695)">CUT&amp;RUN</text>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(62.188028 47.227317)">spike-in</text>
+   </g>
+   <g id="text_2">
+    <g id="patch_3">
+     <path d="M 167.078829 49.968309 
+L 202.246611 49.968309 
+Q 202.530111 49.968309 202.530111 49.684809 
+L 202.530111 34.148812 
+Q 202.530111 33.865312 202.246611 33.865312 
+L 167.078829 33.865312 
+Q 166.795329 33.865312 166.795329 34.148812 
+L 166.795329 49.684809 
+Q 166.795329 49.968309 167.078829 49.968309 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(168.181329 40.127906)">Alignment</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(175.898337 47.272106)">mode</text>
+   </g>
+   <g id="text_3">
+    <g id="patch_4">
+     <path d="M 290.904202 49.92352 
+L 327.330998 49.92352 
+Q 327.614498 49.92352 327.614498 49.64002 
+L 327.614498 34.28318 
+Q 327.614498 33.99968 327.330998 33.99968 
+L 290.904202 33.99968 
+Q 290.620702 33.99968 290.620702 34.28318 
+L 290.620702 49.64002 
+Q 290.620702 49.92352 290.904202 49.92352 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(292.006702 40.172695)">end-to-end</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(295.74585 47.227317)">shortcut</text>
+   </g>
+   <g id="text_4">
+    <g id="patch_5">
+     <path d="M 396.594121 49.92352 
+L 442.894199 49.92352 
+Q 443.177699 49.92352 443.177699 49.64002 
+L 443.177699 34.28318 
+Q 443.177699 33.99968 442.894199 33.99968 
+L 396.594121 33.99968 
+Q 396.310621 33.99968 396.310621 34.28318 
+L 396.310621 49.64002 
+Q 396.310621 49.92352 396.594121 49.92352 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(397.696621 40.172695)">normalization</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(406.962543 47.227317)">cascade</text>
+   </g>
+   <g id="patch_6">
+    <path d="M 123.437968 41.9616 
+Q 129.351349 41.9616 134.64981 41.9616 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 131.44981 40.3616 
+L 134.64981 41.9616 
+L 131.44981 43.5616 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 234.06059 41.9616 
+Q 244.585549 41.9616 254.495589 41.9616 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 251.295589 40.3616 
+L 254.495589 41.9616 
+L 251.295589 43.5616 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 363.129974 41.9616 
+Q 366.738105 41.9616 369.731317 41.9616 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 366.531317 40.3616 
+L 369.731317 41.9616 
+L 366.531317 43.5616 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="text_5">
+    <g id="patch_9">
+     <path d="M 54.045278 83.097669 
+L 98.636482 83.097669 
+Q 98.919982 83.097669 98.919982 82.814169 
+L 98.919982 67.457329 
+Q 98.919982 67.173829 98.636482 67.173829 
+L 54.045278 67.173829 
+Q 53.761778 67.173829 53.761778 67.457329 
+L 53.761778 82.814169 
+Q 53.761778 83.097669 54.045278 83.097669 
+z
+" style="fill: #2a9d8f; stroke: #2a9d8f; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(65.175607 73.257266)">WGBS</text>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(55.147778 80.311888)">methylation</text>
+   </g>
+   <g id="text_6">
+    <g id="patch_10">
+     <path d="M 159.951462 83.05288 
+L 209.373978 83.05288 
+Q 209.657478 83.05288 209.657478 82.76938 
+L 209.657478 67.41254 
+Q 209.657478 67.12904 209.373978 67.12904 
+L 159.951462 67.12904 
+Q 159.667962 67.12904 159.667962 67.41254 
+L 159.667962 82.76938 
+Q 159.667962 83.05288 159.951462 83.05288 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(170.620118 73.302055)">CpG row</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(161.053962 80.356677)">representation</text>
+   </g>
+   <g id="text_7">
+    <g id="patch_11">
+     <path d="M 288.988116 83.097669 
+L 329.247084 83.097669 
+Q 329.530584 83.097669 329.530584 82.814169 
+L 329.530584 67.278173 
+Q 329.530584 66.994673 329.247084 66.994673 
+L 288.988116 66.994673 
+Q 288.704616 66.994673 288.704616 67.278173 
+L 288.704616 82.814169 
+Q 288.704616 83.097669 288.988116 83.097669 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(292.805522 73.257266)">unmerged</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(290.090616 80.401466)">strand rows</text>
+   </g>
+   <g id="text_8">
+    <g id="patch_12">
+     <path d="M 393.920558 83.097669 
+L 445.567762 83.097669 
+Q 445.851262 83.097669 445.851262 82.814169 
+L 445.851262 67.278173 
+Q 445.851262 66.994673 445.567762 66.994673 
+L 393.920558 66.994673 
+Q 393.637058 66.994673 393.637058 67.278173 
+L 393.637058 82.814169 
+Q 393.637058 83.097669 393.920558 83.097669 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(395.023058 73.257266)">coverage/effect</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(412.659613 80.401466)">shift</text>
+   </g>
+   <g id="patch_13">
+    <path d="M 123.437968 75.09096 
+Q 129.351349 75.09096 134.64981 75.09096 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 131.44981 73.49096 
+L 134.64981 75.09096 
+L 131.44981 76.69096 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 234.06059 75.09096 
+Q 244.585549 75.09096 254.495589 75.09096 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 251.295589 73.49096 
+L 254.495589 75.09096 
+L 251.295589 76.69096 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 363.129974 75.09096 
+Q 366.738105 75.09096 369.731317 75.09096 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 366.531317 73.49096 
+L 369.731317 75.09096 
+L 366.531317 76.69096 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="text_9">
+    <g id="patch_16">
+     <path d="M 58.557653 116.18224 
+L 94.124107 116.18224 
+Q 94.407607 116.18224 94.407607 115.89874 
+L 94.407607 100.5419 
+Q 94.407607 100.2584 94.124107 100.2584 
+L 58.557653 100.2584 
+Q 58.274153 100.2584 58.274153 100.5419 
+L 58.274153 115.89874 
+Q 58.274153 116.18224 58.557653 116.18224 
+z
+" style="fill: #a95f3d; stroke: #a95f3d; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(59.660153 106.431415)">ATAC-seq</text>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(66.137341 113.486037)">peaks</text>
+   </g>
+   <g id="text_10">
+    <g id="patch_17">
+     <path d="M 159.951462 116.18224 
+L 209.373978 116.18224 
+Q 209.657478 116.18224 209.657478 115.89874 
+L 209.657478 100.5419 
+Q 209.657478 100.2584 209.373978 100.2584 
+L 159.951462 100.2584 
+Q 159.667962 100.2584 159.667962 100.5419 
+L 159.667962 115.89874 
+Q 159.667962 116.18224 159.951462 116.18224 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(167.685204 106.431415)">Peak input</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(161.053962 113.486037)">representation</text>
+   </g>
+   <g id="text_11">
+    <g id="patch_18">
+     <path d="M 287.254139 116.227029 
+L 330.981061 116.227029 
+Q 331.264561 116.227029 331.264561 115.943529 
+L 331.264561 100.586689 
+Q 331.264561 100.303189 330.981061 100.303189 
+L 287.254139 100.303189 
+Q 286.970639 100.303189 286.970639 100.586689 
+L 286.970639 115.943529 
+Q 286.970639 116.227029 287.254139 116.227029 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(288.356639 106.386626)">BAMPE used</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(296.906428 113.441248)">directly</text>
+   </g>
+   <g id="text_12">
+    <g id="patch_19">
+     <path d="M 401.589824 116.18224 
+L 437.898496 116.18224 
+Q 438.181996 116.18224 438.181996 115.89874 
+L 438.181996 100.5419 
+Q 438.181996 100.2584 437.898496 100.2584 
+L 401.589824 100.2584 
+Q 401.306324 100.2584 401.306324 100.5419 
+L 401.306324 115.89874 
+Q 401.306324 116.18224 401.589824 116.18224 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(402.692324 106.431415)">peak/motif</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(406.962543 113.486037)">cascade</text>
+   </g>
+   <g id="patch_20">
+    <path d="M 123.437968 108.22032 
+Q 129.351349 108.22032 134.64981 108.22032 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 131.44981 106.62032 
+L 134.64981 108.22032 
+L 131.44981 109.82032 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 234.06059 108.22032 
+Q 244.585549 108.22032 254.495589 108.22032 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 251.295589 106.62032 
+L 254.495589 108.22032 
+L 251.295589 109.82032 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 363.129974 108.22032 
+Q 366.738105 108.22032 369.731317 108.22032 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 366.531317 106.62032 
+L 369.731317 108.22032 
+L 366.531317 109.82032 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="text_13">
+    <g id="patch_23">
+     <path d="M 60.580052 149.3116 
+L 92.101708 149.3116 
+Q 92.385208 149.3116 92.385208 149.0281 
+L 92.385208 133.67126 
+Q 92.385208 133.38776 92.101708 133.38776 
+L 60.580052 133.38776 
+Q 60.296552 133.38776 60.296552 133.67126 
+L 60.296552 149.0281 
+Q 60.296552 149.3116 60.580052 149.3116 
+z
+" style="fill: #8d867e; stroke: #8d867e; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(67.355013 139.560775)">Prior</text>
+    <text style="font-weight: 700; font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #ffffff" transform="translate(61.682552 146.615397)">override</text>
+   </g>
+   <g id="text_14">
+    <g id="patch_24">
+     <path d="M 168.935361 149.3116 
+L 200.390079 149.3116 
+Q 200.673579 149.3116 200.673579 149.0281 
+L 200.673579 133.67126 
+Q 200.673579 133.38776 200.390079 133.38776 
+L 168.935361 133.38776 
+Q 168.651861 133.38776 168.651861 133.67126 
+L 168.651861 149.0281 
+Q 168.651861 149.3116 168.935361 149.3116 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(170.037861 139.560775)">Evidence</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(170.347447 146.615397)">selection</text>
+   </g>
+   <g id="text_15">
+    <g id="patch_25">
+     <path d="M 280.140061 149.356389 
+L 338.095139 149.356389 
+Q 338.378639 149.356389 338.378639 149.072889 
+L 338.378639 133.536892 
+Q 338.378639 133.253392 338.095139 133.253392 
+L 280.140061 133.253392 
+Q 279.856561 133.253392 279.856561 133.536892 
+L 279.856561 149.072889 
+Q 279.856561 149.356389 280.140061 149.356389 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(281.242561 139.515986)">canonical biology</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(291.124702 146.660186)">substituted</text>
+   </g>
+   <g id="text_16">
+    <g id="patch_26">
+     <path d="M 392.51241 149.3116 
+L 446.97591 149.3116 
+Q 447.25941 149.3116 447.25941 149.0281 
+L 447.25941 133.67126 
+Q 447.25941 133.38776 446.97591 133.38776 
+L 392.51241 133.38776 
+Q 392.22891 133.38776 392.22891 133.67126 
+L 392.22891 149.0281 
+Q 392.22891 149.3116 392.51241 149.3116 
+z
+" style="fill: #ffffff; stroke: #d6d1c8; stroke-width: 0.55; stroke-linejoin: miter"/>
+    </g>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(393.61491 139.560775)">computed result</text>
+    <text style="font-size: 6.3px; font-family: 'DejaVu Serif', serif; fill: #15191f" transform="translate(404.058637 146.615397)">discarded</text>
+   </g>
+   <g id="patch_27">
+    <path d="M 123.437968 141.34968 
+Q 129.351349 141.34968 134.64981 141.34968 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 131.44981 139.74968 
+L 134.64981 141.34968 
+L 131.44981 142.94968 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 234.06059 141.34968 
+Q 244.585549 141.34968 254.495589 141.34968 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 251.295589 139.74968 
+L 254.495589 141.34968 
+L 251.295589 142.94968 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="patch_29">
+    <path d="M 363.129974 141.34968 
+Q 366.738105 141.34968 369.731317 141.34968 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+    <path d="M 366.531317 139.74968 
+L 369.731317 141.34968 
+L 366.531317 142.94968 
+" style="fill: none; stroke: #afa89b; stroke-width: 0.55; stroke-linecap: round"/>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 6px; font-family: 'DejaVu Serif', serif; text-anchor: middle; fill: #5f6872" x="76.34088" y="21.58833" transform="rotate(-0 76.34088 21.58833)">Assay context</text>
+   </g>
+   <g id="text_18">
+    <text style="font-weight: 700; font-size: 6px; font-family: 'DejaVu Serif', serif; text-anchor: middle; fill: #5f6872" x="184.66272" y="21.673642" transform="rotate(-0 184.66272 21.673642)">Decision point</text>
+   </g>
+   <g id="text_19">
+    <text style="font-weight: 700; font-size: 6px; font-family: 'DejaVu Serif', serif; text-anchor: middle; fill: #5f6872" x="309.1176" y="21.673642" transform="rotate(-0 309.1176 21.673642)">Agent shortcut</text>
+   </g>
+   <g id="text_20">
+    <text style="font-weight: 700; font-size: 6px; font-family: 'DejaVu Serif', serif; text-anchor: middle; fill: #5f6872" x="419.74416" y="21.673642" transform="rotate(-0 419.74416 21.673642)">Failure cascade</text>
+   </g>
+   <g id="text_21">
+    <text style="font-weight: 700; font-size: 10.8px; font-family: 'DejaVu Serif', serif; text-anchor: start; fill: #15191f" x="2.58984" y="6.586177" transform="rotate(-0 2.58984 6.586177)">B</text>
+   </g>
+  </g>
+ </g>
+</svg>
