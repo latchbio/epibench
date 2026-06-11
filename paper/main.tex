@@ -187,12 +187,12 @@ Chromatin state (12), QC (10), peak calling (9), secondary analysis (7), genomic
 \addlinespace
 ATAC-seq &
 24 &
-B-ALL ATAC, cold-response ATAC &
+\new{B-ALL ATAC (GSE161501, primary + cold-start integrative)} &
 Secondary analysis (17), chromatin state (2), peak calling (2), QC (2), genomic annotation (1) \\
 \addlinespace
 ChIP-seq &
 10 &
-ChIP-seq workflow snapshots &
+\new{B-ALL H3K27ac (GSE211631)} &
 Peak calling (3), chromatin state (2), QC (2), secondary analysis (2), genomic annotation (1) \\
 \addlinespace
 Methylation-seq &
@@ -299,15 +299,22 @@ uniformly. They are more reliable in some assay representations than in
 others.
 
 The assay differences reflect workflow conventions as much as biological
-domain. ATAC-seq was the hardest aggregate despite familiar peak-level data,
-because many tasks required preserving the correct sample, peak, or contrast
-definition through secondary analysis. CUT\&Tag/CUT\&RUN occupied the middle
+domain. \new{ATAC-seq had the lowest aggregate pass rate (22.8\%), driven by two
+dominant failure modes: multi-omic integration tasks that require
+subtype-preserving RNA+ATAC pairing (75.8\% fail rate across 13 evaluations),
+and the Tn5 insertion-site convention where agents feed paired-end BAMs
+directly to MACS3 instead of extracting single-bp cut sites, producing
+$\sim$10$\times$ fewer peaks.} CUT\&Tag/CUT\&RUN occupied the middle
 of the distribution, with stronger performance on peak calling, annotation,
 and secondary analysis than on alignment or QC. Methylation-seq also sat near
 the middle overall, but it mixed relatively tractable annotation and secondary
 analysis tasks with brittle coverage, strand, and effect-size decisions.
-ChIP-seq was easiest in this inventory, driven in part by high performance on
-quality-control tasks.
+\new{ChIP-seq had the highest aggregate pass rate, but this reflects a bimodal
+distribution: A5 (69\%), E5 (65\%), and K2 (76\%) pass easily, while F2, H3,
+and L3 have 0\% pass rates across all models. The aggregate is driven by
+evaluations where the methodology is procedural rather than conceptual.
+ChIP-seq also represents a much smaller population compared to other assay
+types (10 evaluations vs 24--47).}
 
 The assay inventory is broad but not balanced. CUT\&Tag/CUT\&RUN contributes
 47 evaluations, methylation-seq 25, ATAC-seq 24, and ChIP-seq 10
@@ -319,11 +326,8 @@ which assay-specific cells drive each aggregate estimate.
 
 \begin{center}
   \includegraphics[width=0.34\textwidth]{figures/fig5a.pdf}\hfill
-  \includegraphics[width=0.62\textwidth]{figures/fig5b.pdf}
-
-  \vspace{0.45em}
-
-  \includegraphics[width=0.78\textwidth]{figures/fig5c.pdf}
+  \includegraphics[width=0.62\textwidth]{figures/fig5b.pdf}\\[0.3em]
+  \includegraphics[width=0.62\textwidth]{figures/fig5c.pdf}
 
   \captionof{figure}{\textbf{Performance varies by assay type.}
   Panel A: run-level pass rate by assay type with Wilson confidence intervals
@@ -379,16 +383,20 @@ decision rather than an inability to run code.
 
 \subsection{Errors trace to assay-specific choices}
 
-Manual review localizes endpoint misses to concrete analysis decisions. Review
-coverage is incomplete (25/106 evaluations), and the labels are task-level
-diagnostics rather than per-run error calls. Within that reviewed subset, the
-most common error types were incorrect statistic or ranking (14 evaluations;
-33.9\% pass rate), unstable threshold choice (9; 31.9\%), biological prior
-over provided evidence (8; 45.6\%), gene/peak identifier mismatch (6; 0.0\%),
-and incorrect biological unit or reference set (6; 42.7\%). These are not
-generic reasoning failures. They are local choices about which data layer,
-feature identity, comparison group, threshold, or biological prior should
-control the final answer.
+Manual review localizes endpoint misses to concrete analysis decisions. \new{Review
+coverage spans 25/106 evaluations, and evaluations carry multiple trap labels
+because a single task can test several decision points---although each eval
+concretely tests a single skill. Within the reviewed subset, we identify five
+recurring error families: prior-driven assertion---substituting textbook
+biology for computation (10 evaluations; 48.0\% aggregate fail rate, ranging
+from 0\% to 100\% per eval); depth or normalization confounding---equalizing
+after feature detection rather than before (7 evaluations; 67.2\%); format or
+mode selection---the same tool flag producing opposite errors depending on
+assay context (4 evaluations; 65.9\%); signal source substitution---choosing
+the wrong enrichment column or coverage track (4 evaluations; 91.1\%); and
+strand or context mishandling in bisulfite data (7 evaluations; 99.0\%).}
+These are not generic reasoning failures. They are local choices about which
+parameter, data layer, or biological prior should control the final answer.
 
 The reviewed traps also explain why evaluation difficulty is correlated.
 One missing assay convention can sink several tasks at once. In CUT\&RUN
@@ -399,17 +407,39 @@ merge the two Bismark rows representing one CpG dinucleotide changes coverage
 and downstream differential-methylation calls. In ATAC-seq, feeding paired-end
 BAMs directly to MACS3 with \texttt{-f BAMPE} can replace the intended Tn5
 insertion-site workflow and propagate into peak, motif, and integration
-analyses.
+analyses. \new{A vast majority of the times, the agents got the tools correct, 
+but the exact specifics of the parameters that would help identify biologically 
+sensible answers were missing, and these were precisely the elements that the benchmark 
+is designed to test.}
 
 Prior-driven assertion is a separate recurring pattern. Agents sometimes
 substitute well-known regulatory biology for the calculation supported by the
 provided files: promoter methylation instead of the requested gene-body
 comparison, canonical driver genes instead of the computed enhancer ranking,
 or differentiated-cell references instead of the stem-cell reference required
-for a Polycomb methylation enrichment. These examples frame the benchmark's
-core measurement target: not whether an agent can invoke bioinformatics tools,
-but whether it can commit to the assay-specific decision that makes the
-computed result verifiable.
+for a Polycomb methylation enrichment.
+
+\new{The strongest evidence that the benchmark measures judgment rather than
+computation comes from trajectories where agents computed the correct answer
+and then discarded it. Detailed trajectory review of the ceiling model
+(GPT-5.5) across CUT\&Tag/CUT\&RUN (53 evaluations) and methylation-seq (25
+evaluations) identified this ``explore-then-retreat'' pattern in 7
+evaluations (9.0\% of 78 reviewed): in each case, at least one trajectory
+obtained the correct value or parameter setting, then deliberately revised to
+a more familiar alternative before submitting. The revisions moved toward
+end-to-end alignment defaults, array-era effect-size thresholds, textbook
+biological interpretations, or externally-sourced annotations --- generic
+workflow conventions rather than the assay-specific choice supported by the
+data. In 4 of these 7 evaluations, the correct answer was visible in the
+agent's own computational output before it was overridden. This pattern is
+distinct from prior-driven assertion (where agents never compute the correct
+answer) and confirms that the discriminating barrier at the frontier is not
+tool invocation or arithmetic but the confidence to commit to an unfamiliar,
+data-supported result.}
+
+These examples frame the benchmark's core measurement target: not whether an
+agent can invoke bioinformatics tools, but whether it can commit to the
+assay-specific decision that makes the computed result verifiable.
 
 \EndBody
 
@@ -445,12 +475,17 @@ roughly half of available endpoint answers, and many failures show substantial
 component-level progress. The limitation is reliability: even strong
 model-harness pairs remain sensitive to representation, metric definition,
 and comparator choice. These are precisely the local decisions that determine
-whether an epigenomics analysis is trustworthy.
+whether an epigenomics analysis is trustworthy. \new{Another point worth noting is that,
+for 44.2\% of the evalutations across all model + harness pairs, the agent was able to pass
+atleast one of the three replicates, suggesting that thr agents often lack conviction with regards 
+to telling the difference between a correct vs incorrect answer.}
 
 \new{The trap taxonomy clarifies what the benchmark measures. Agents can run
 Bowtie2, MACS2, Picard, and HOMER correctly --- they fail at choosing
-\texttt{--local} vs \texttt{end-to-end}, \texttt{-f BAMPE} vs \texttt{-f BAM},
-\texttt{--broad} vs narrow, or the appropriate \texttt{--keep-dup} setting.
+\texttt{--local} vs \texttt{end-to-end} for spike-in alignment,
+\texttt{-f BAMPE} vs Tn5 insertion-site BED for ATAC-seq peak calling,
+\texttt{--broad} vs narrow for domain-spanning marks, or pre- vs
+post-peak-calling depth equalization.
 The bottleneck is domain-specific parameter selection that requires
 understanding \emph{why} the tool behaves differently for a given mark or
 assay, not \emph{how} to invoke it. This positions the benchmark as a test of
@@ -466,14 +501,17 @@ ATAC-seq peaks by $\sim$10$\times$). These are not epigenomics-specific;
 any scientific benchmark involving bioinformatics tools will encounter agents
 that know tool syntax but not parameter semantics.}
 
-\new{The progressive-difficulty design is validated by the trap analysis.
-Procedural evaluations saturate at the ceiling model (100\% pass, requiring
-hardening), scientific-judgment evaluations discriminate (30--50\% pass at
-ceiling), and conceptual-biology evaluations defeat all models (0\% pass,
-probing future capability). As weaker models are tested, failures should
-migrate from the decision layer (``computed correctly but chose wrong'') to
-the computation layer (``cannot compute at all''), producing the graduated
-difficulty curve needed for meaningful model separation.}
+\new{The progressive-difficulty design is validated by the failure
+distribution. Of 106 evaluations, 21 have 0\% pass rates across all 16
+model-harness pairs---these are dominated by strand-merging catastrophes,
+multi-omic integration, and signal-source traps where no current agent
+overcomes the underlying scientific-judgment barrier. At the other extreme,
+GPT-5.5 / Pi passes 38/106 evaluations on all three replicates, indicating
+stable mastery of procedural tasks. The middle band (30--50\% pass at the
+leading model) concentrates in discriminative traps---spike-in alignment
+mode, depth confounding, and prior-driven assertion---where the ceiling
+model sometimes computes the correct answer but discards it in favor of a
+more familiar alternative.}
 
 The benchmark has several limitations. The updated manifest is balanced across
 model-harness pairs, but the task inventory is not balanced across assay
@@ -483,9 +521,15 @@ QC tasks dominate the inventory. \new{The
 correlation structure of trap clusters means aggregate scores partially
 reflect repeated tests of the same underlying decision; this mirrors real
 workflow failure modes but should be acknowledged when interpreting
-per-evaluation independence.} Finally, deterministic graders intentionally
+per-evaluation independence.} Also, deterministic graders intentionally
 constrain the answer surface; they are useful for measurement, but they do not
-capture every scientifically valid analysis path.
+capture every scientifically valid analysis path. \new{Additionally, the benchamrk is 
+also tests specific scientific skills as opposed to general epigenetics reasoning skills. 
+We also worked with a sample of epigenetic tests and we believe we have only scratched the 
+surface of problems that can be tested with the benchmark and we plan to certainly 
+expand to other assay types and analysis tasks.}
+
+
 
 \section{Methods}
 
