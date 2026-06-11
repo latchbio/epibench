@@ -8,9 +8,8 @@
 \preprintKicker{bioRxiv preprint}
 \preprintCategory{Computational Biology}
 \preprintDate{June 2026}
-\preprintTitle{EpiBench: Verifiable Evaluation of AI Agents on Epigenetics Analysis}
-\preprintSubtitle{Short-horizon tasks from real epigenetics workflows}
-\preprintAuthors{Harihara Muralidharan\preprintSup{1}, Reema Baskar\preprintSup{1}, Soo Hee Lee\preprintSup{1}, Kenny Workman\preprintSup{1}}
+\preprintTitle{EpiBench: Verifiable Evaluation of AI Agents on Epigenomics Analysis}
+\preprintAuthors{Harihara Muralidharan\preprintSup{1}, Reema Baskar\preprintSup{1}, Soo Hee Lee\preprintSup{1}, Tim Proctor\preprintSup{1}, Kenny Workman\preprintSup{1}}
 \preprintAffiliations{\preprintSup{1}LatchBio, San Francisco, CA, USA}
 \preprintCorrespondence{kenny@latch.bio}
 
@@ -20,20 +19,17 @@
 
 \begin{PreprintAbstract}
 We introduce EpiBench, a verifiable benchmark for short-horizon epigenomics
-analysis.  EpigeneticsBench evaluates if agents can execute well-defined
+analysis. EpiBench evaluates whether agents can make well-defined
 analysis decisions from realistic workflow states and return deterministically
-gradable answers. The benchmark includes 106 tasks across
+gradable answers. The benchmark includes 106 evaluations across
 CUT\&Tag/CUT\&RUN, ATAC-seq, ChIP-seq, and DNA methylation workflows. Across
-5,088 parsed trajectories from 16 model-harness pairs, no system solves a
-majority of attempts: GPT-5.5 / Pi leads at 151/318 attempts (47.5\%), followed
-by GPT-5.5 / OpenAI Codex at 135/318 attempts (42.5\%) and GPT-5.4 / Pi at
-134/318 attempts (42.1\%). Difficulty is structured by assay type and
-workflow convention, and component-level
-scoring reveals frequent partial recovery despite endpoint failure. These
-results suggest that current agents can often locate and manipulate the right
-biological evidence, but still fail at brittle local decisions involving metric
-definitions, comparator scope, normalization state, and answer-surface
-constraints.
+5,088 valid trajectories from 16 model-harness pairs, no system passed a
+majority of attempts: GPT-5.5 / Pi leads at 45.0\%, followed
+by GPT-5.5 / OpenAI Codex at 39.9\%. Claude Opus 4.8 Max /
+Pi and GPT-5.4 / Pi each achieved 39.0\%. Performance varies across assay
+types, and many failed runs still contain parts of the correct answer. Agents
+often found the right files and computed useful intermediate results, but
+failed when the task required deeper, assay-specific scientific judgment.
 \end{PreprintAbstract}
 
 \vfill
@@ -44,9 +40,9 @@ constraints.
 {\fontsize{9.1}{12.8}\selectfont
 We ran the benchmark across 16 model-harness pairs. Pi denotes the Pi terminal
 coding harness. Passing requires exact recovery of the graded structured
-answer for an evaluation attempt. The updated manifest contains 5,088 valid
-result JSONs in a balanced three-replicate design: 106 evaluations for each of
-16 model-harness pairs.
+answer for an evaluation attempt. The result set contains 5,088 valid
+trajectories in a balanced three-replicate design: 106 evaluations for each
+of 16 model-harness pairs.
 \par}
 
 \begin{center}
@@ -65,25 +61,29 @@ result JSONs in a balanced three-replicate design: 106 evaluations for each of
   \end{minipage}
 
   \captionof{figure}{\textbf{Topline benchmark performance.}
-  Top: run-level pass rate by model-harness pair across all parsed attempts.
-  Bottom left: pass rate by assay and task family. Bottom right: pass rate
-  against median runtime. Wilson confidence intervals and evaluation-level
-  replicate statistics are reported in Table~\ref{tab:model-results}.}
+  Top: evaluation-weighted pass rate by model-harness pair across all trajectories.
+  The top panel shows Student $t$ confidence intervals over per-evaluation
+  replicate means. Bottom left: pass rate by assay and task family. Bottom
+  right: pass rate against median runtime. Evaluation-level replicate
+  statistics are reported in Table~\ref{tab:model-results}.}
   \label{fig:topline-performance}
 \end{center}
 
-\StartBody
+\clearpage
+
+{\fontsize{9.1}{12.8}\selectfont
+\noindent\begin{minipage}[t]{0.47\textwidth}
 
 \section{Introduction}
 
 Epigenomic assays measure the regulatory state of the genome: chromatin
 accessibility, histone modifications, DNA methylation, and other molecular
-signals that link genotype to cell state and gene regulation. But raw
-epigenomics data are not directly interpretable. Drawing scientific conclusions
-requires a sequence of analysis decisions across read alignment, peak calling,
-motif interpretation, sample aggregation, normalization, and genomic
-annotation. Small procedural choices can change the final biological
-conclusion.
+signals that link genotype to cell state and gene regulation
+\cite{encode2012,roadmap2015}. But raw epigenomics data are not directly
+interpretable. Drawing scientific conclusions requires a sequence of analysis
+decisions across read alignment, peak calling, motif interpretation, sample
+aggregation, normalization, and genomic annotation. Small procedural choices
+can change the final biological conclusion.
 
 AI agents show early promise in human-guided analysis of biological data. They
 can inspect files, write code, invoke command-line tools, and exercise some
@@ -91,7 +91,8 @@ scientific judgment in analysis tasks. But they remain prone to hallucination
 and unreliable biological judgment, especially across diverse tissues,
 diseases, study designs, and assay types.
 
-Existing biology benchmarks increasingly test practical analysis, but, to our
+Existing biology benchmarks increasingly test practical analysis in other data
+modalities \cite{workman2025spatialbench,workman2026scbench}, but, to our
 knowledge, none focus on epigenomics analysis alone. We introduce EpiBench, a
 verifiable benchmark for short-horizon epigenomics tasks. Each evaluation
 snapshots a realistic workflow state immediately before a target result. The
@@ -100,31 +101,33 @@ with the data and return a structured answer graded deterministically. The
 benchmark includes 106 evaluations across CUT\&Tag/CUT\&RUN, ATAC-seq,
 ChIP-seq, and DNA methylation workflows, covering quality control, peak
 calling, chromatin-state analysis, genomic annotation, differential
-methylation, secondary analysis, alignment, and visualization.
+methylation, downstream quantitative analysis, alignment, and visualization.
 
-Across 5,088 parsed trajectories from 16 model-harness pairs, no system solves
-a majority of attempts. GPT-5.5 / Pi leads at 151/318 attempts (47.5\%),
-followed by GPT-5.5 / OpenAI Codex at 135/318 attempts (42.5\%) and GPT-5.4 /
-Pi at 134/318 attempts (42.1\%). The failures show that current agents can
-sometimes make reasonable progress with epigenetics data, but still struggle
-with some analysis decisions, especially those that require biological
+Across 5,088 valid trajectories from 16 model-harness pairs, no system passed
+a majority of attempts. GPT-5.5 / Pi leads at 45.0\%,
+followed by GPT-5.5 / OpenAI Codex at 39.9\%. Claude Opus
+4.8 Max / Pi and GPT-5.4 / Pi each achieved 39.0\%. The failures
+show that current agents can sometimes make reasonable progress with
+epigenomics data, but still struggle with some analysis decisions, especially
+those that require biological
 reasoning: choosing which samples to compare, accurate normalization,
 identifying appropriate genomic features, and reporting appropriate
 statistics.
 
-\EndBody
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}
 
 \section{Benchmark Construction}
 
-{\fontsize{9.1}{12.8}\selectfont
 To construct a benchmark that approximates real epigenomics analysis, we
 derived evaluations from practical workflows across CUT\&Tag/CUT\&RUN,
 ATAC-seq, ChIP-seq, and DNA methylation. We decomposed analysis workflows
 into short, gradeable decisions: quality control, peak calling,
 chromatin-state comparisons, genomic annotations, methylation statistics,
-alignment checks, and secondary analyses. At each step, we sought to isolate
-the empirical decision that determines the result and formalize it as a
-deterministically gradable answer.
+alignment checks, and downstream quantitative analyses such as motif,
+gene-set, regulatory-domain, and cross-modality summaries. At each step, we
+sought to isolate the empirical decision that determines the result and
+formalize it as a deterministically gradable answer.
 
 The final evaluation suite consists of 106 problems spanning four assay
 families and eight task categories. Each problem includes a snapshot of real
@@ -137,8 +140,8 @@ evaluation admits an automatically checkable success condition, such as a
 numerical interval check, structured label match, or all-of field comparison.
 Second, tasks should be scientifically durable: the intended answer should be
 recoverable across reasonable analysis choices, so the benchmark measures
-epigenomics reasoning rather than brittle implementation details. Third, tasks
-should resist shortcuts: agents must interact with the provided data
+epigenomics reasoning rather than incidental implementation details. Third,
+tasks should resist shortcuts: agents must interact with the provided data
 artifacts, and we remove items that can be solved reliably by trivial
 heuristics or prior biological knowledge alone.
 
@@ -154,21 +157,41 @@ trajectories across runs to identify prompts that over-specified the method,
 answers that could be obtained through shortcuts, and graders that failed to
 distinguish supported results from plausible but unsupported biological
 outputs.
-\par}
+\par
 
-\section{Evaluation Inventory}
+\end{minipage}
+}
+
+\clearpage
 
 {\fontsize{9.1}{12.8}\selectfont
+\section{Evaluation Inventory}
+
+\begin{multicols}{2}
 The benchmark covers four assay types and eight task categories.
 CUT\&Tag/CUT\&RUN tasks are drawn from zebrafish chromatin workflow snapshots
-and span chromatin state analysis, QC, peak calling, secondary analysis,
-genomic annotation, alignment, and visualization. ATAC-seq tasks cover B-ALL
-and cold-response analyses, with secondary analysis dominating. ChIP-seq
-tasks include peak calling, chromatin state analysis, QC, genomic annotation,
-and secondary analysis. Methylation tasks are derived from GSE149608 and
-GSE149609, covering QC, secondary analysis, genomic annotation, and
-differential methylation.
+and span chromatin state analysis, QC, peak calling, downstream analysis,
+genomic annotation, alignment, and visualization. ATAC-seq tasks use pediatric
+B-ALL ATAC/RNA resources from GSE161501 and related integrative workflow
+artifacts \cite{diedrich2021allatac}, with downstream analysis dominating.
+ChIP-seq tasks use B-ALL H3K27ac resources from GSE211631
+\cite{barnett2023ball} and include peak calling, chromatin state analysis, QC,
+genomic annotation, and downstream analysis. Methylation tasks are derived
+from the ESCC WGBS/RNA resources GSE149608 and GSE149609 \cite{cao2020escc},
+covering QC, downstream analysis, genomic annotation, and differential
+methylation.
+\par
+
+{\fontsize{8.3}{11.4}\selectfont
+Across all 106 evaluations, 34 are downstream analysis tasks, 22 are QC, 16
+are chromatin state analysis, 14 are peak calling, 12 are genomic annotation,
+4 are differential methylation, 3 are alignment, and 1 is visualization. The
+result set contains 5,088 valid trajectories from 16 model-harness pairs,
+with three attempts for each evaluation and model-harness pair.
 \par}
+
+\end{multicols}
+}
 
 \begin{center}
 \fontsize{7.2}{8.7}\selectfont
@@ -183,22 +206,22 @@ Assay type & Evals & Sources & Task categories \\
 CUT\&Tag/CUT\&RUN &
 47 &
 Zebrafish chromatin workflow snapshots &
-Chromatin state (12), QC (10), peak calling (9), secondary analysis (7), genomic annotation (5), alignment (3), visualization (1) \\
+Chromatin state (12), QC (10), peak calling (9), downstream analysis (7), genomic annotation (5), alignment (3), visualization (1) \\
 \addlinespace
 ATAC-seq &
 24 &
-\new{B-ALL ATAC (GSE161501, primary + cold-start integrative)} &
-Secondary analysis (17), chromatin state (2), peak calling (2), QC (2), genomic annotation (1) \\
+B-ALL ATAC/RNA (GSE161501 and integrative workflow artifacts) &
+Downstream analysis (17), chromatin state (2), peak calling (2), QC (2), genomic annotation (1) \\
 \addlinespace
 ChIP-seq &
 10 &
-\new{B-ALL H3K27ac (GSE211631)} &
-Peak calling (3), chromatin state (2), QC (2), secondary analysis (2), genomic annotation (1) \\
+B-ALL H3K27ac (GSE211631) &
+Peak calling (3), chromatin state (2), QC (2), downstream analysis (2), genomic annotation (1) \\
 \addlinespace
 Methylation-seq &
 25 &
 GSE149608, GSE149609 &
-QC (8), secondary analysis (8), genomic annotation (5), differential methylation (4) \\
+QC (8), downstream analysis (8), genomic annotation (5), differential methylation (4) \\
 \bottomrule
 \end{tabular}
 \captionof{table}{\textbf{Evaluation inventory.}
@@ -207,120 +230,92 @@ workflow, task category, and expected answer surface within each group.}
 \label{tab:evaluation-inventory}
 \end{center}
 
-{\fontsize{8.3}{11.4}\selectfont
-Across all 106 evaluations, 34 are secondary analysis tasks, 22 are QC, 16
-are chromatin state analysis, 14 are peak calling, 12 are genomic annotation,
-4 are differential methylation, 3 are alignment, and 1 is visualization. The
-updated result manifest contains 5,088 valid trajectories from 16
-model-harness pairs, with exactly 318 attempts per model-harness pair.
-\par}
+\clearpage
 
 \StartBody
 
 \section{Results}
 
-\subsection{Top agents remain below 50\% endpoint accuracy}
+\subsection{No agent reaches a 50\% endpoint pass rate}
 
 Across 16 model-harness pairs and 5,088 valid trajectories, deterministic
-final-answer grading produced 1,672 passes (32.9\%). No system reached 50\%
-endpoint accuracy. GPT-5.5 / Pi was the descriptive leader, passing 151/318
-attempts (47.5\%; Wilson 95\% confidence interval (CI), 42.1--53.0), followed
-by GPT-5.5 / OpenAI Codex at 135/318 (42.5\%; 37.1--47.9) and GPT-5.4 / Pi at
-134/318 (42.1\%; 36.8--47.6). Claude Opus 4.8 Max / Pi and Claude Opus 4.8 /
-Claude Code both passed 126/318 attempts (39.6\%).
+endpoint grading produced 1,578 passes (31.0\%). No observed endpoint pass
+rate reached 50\%. GPT-5.5 / Pi was the descriptive leader at
+45.0\% (95\% confidence interval (CI), 36.3--53.7), followed by
+GPT-5.5 / OpenAI Codex at 39.9\% (31.6--48.3). Claude Opus 4.8
+Max / Pi and GPT-5.4 / Pi each passed 39.0\%.
 
-The updated manifest is balanced: each model-harness pair contributes three
-rounds for each of 106 evaluations, so differences reflect the same evaluation
-set rather than coverage differences. The top systems form a leading band
-rather than a clean ordering: several Wilson intervals overlap, and the gap
-between second and third place is only one passing run. We therefore treat
-this section as a measurement of current endpoint accuracy and reliability,
-not as a finely resolved leaderboard.
+The leading systems form a broad tier rather than a stable ordering: their
+confidence intervals overlap, and their pass rates are close. Even the strongest
+model-harness pair passed fewer than half of endpoint-graded attempts, indicating
+that short-horizon epigenomics analysis remains difficult for current agents.
 
 \EndBody
 
 \begin{center}
   \includegraphics[width=0.94\textwidth]{figures/fig4.pdf}
 
-  \captionof{figure}{\textbf{Endpoint accuracy and replicate outcomes across
-  model-harness pairs.} Panel A: run-level pass rate across all 5,088 parsed
-  attempts, with Wilson confidence intervals and a 50\% reference line. Panel
-  B: evaluation-level replicate outcomes over the same model order, partitioning
-  the 106 evaluations for each model-harness pair by whether zero, one, two, or
-  all three attempts passed.}
+  \captionof{figure}{\textbf{Endpoint pass rates across model-harness pairs.}
+  Panel A: endpoint pass rate across all 5,088 trajectories, with 95\%
+  confidence intervals and a 50\% reference line. Panel B: evaluation-level
+  replicate outcomes over the same
+  model order, partitioning the 106 evaluations for each model-harness pair by
+  whether zero, one, two, or all three attempts passed.}
   \label{fig:main-results-summary}
 \end{center}
 
 \begin{center}
 {\fontsize{5.1}{6.3}\selectfont
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\linewidth}rrrrrr@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.42\linewidth}rrrrr@{}}
 \toprule
-Model / harness & Pass runs & Pass \% & Wilson 95\% CI & Any & Majority & All \\
+Model / harness & Pass \% & 95\% CI & $\geq$1/3 & $\geq$2/3 & 3/3 \\
 \midrule
-GPT-5.5 / Pi & 151/318 & 47.5 & 42.1--53.0 & 61/106 & 52/106 & 38/106 \\
-GPT-5.5 / OpenAI Codex & 135/318 & 42.5 & 37.1--47.9 & 57/106 & 45/106 & 33/106 \\
-GPT-5.4 / Pi & 134/318 & 42.1 & 36.8--47.6 & 58/106 & 49/106 & 27/106 \\
-Claude Opus 4.8 Max / Pi & 126/318 & 39.6 & 34.4--45.1 & 50/106 & 41/106 & 35/106 \\
-Claude Opus 4.8 / Claude Code & 126/318 & 39.6 & 34.4--45.1 & 51/106 & 44/106 & 31/106 \\
-GPT-5.4 / OpenAI Codex & 122/318 & 38.4 & 33.2--43.8 & 54/106 & 38/106 & 30/106 \\
-Claude Opus 4.7 / Claude Code & 109/318 & 34.3 & 29.3--39.7 & 48/106 & 35/106 & 26/106 \\
-Claude Opus 4.7 / Pi & 105/318 & 33.0 & 28.1--38.4 & 45/106 & 36/106 & 24/106 \\
-Claude Opus 4.6 / Pi & 104/318 & 32.7 & 27.8--38.0 & 46/106 & 34/106 & 24/106 \\
-Gemini 3.5 Flash / Pi & 98/318 & 30.8 & 26.0--36.1 & 46/106 & 33/106 & 19/106 \\
-Claude Opus 4.6 / Claude Code & 97/318 & 30.5 & 25.7--35.8 & 50/106 & 30/106 & 17/106 \\
-Gemini 3.1 Pro / Pi & 86/318 & 27.0 & 22.5--32.2 & 41/106 & 29/106 & 16/106 \\
-Claude Sonnet 4.6 / Pi & 81/318 & 25.5 & 21.0--30.5 & 38/106 & 26/106 & 17/106 \\
-Kimi K2P6 / Pi & 79/318 & 24.8 & 20.4--29.9 & 44/106 & 21/106 & 14/106 \\
-Grok 4.20 reasoning / Pi & 76/318 & 23.9 & 19.5--28.9 & 40/106 & 25/106 & 11/106 \\
-Grok 4.3 / Pi & 43/318 & 13.5 & 10.2--17.7 & 21/106 & 13/106 & 9/106 \\
+GPT-5.5 / Pi & 45.0 & 36.3--53.7 & 58/106 & 49/106 & 36/106 \\
+GPT-5.5 / OpenAI Codex & 39.9 & 31.6--48.3 & 55/106 & 42/106 & 30/106 \\
+Claude Opus 4.8 Max / Pi & 39.0 & 30.2--47.8 & 49/106 & 40/106 & 35/106 \\
+GPT-5.4 / Pi & 39.0 & 31.0--47.0 & 55/106 & 46/106 & 23/106 \\
+Claude Opus 4.8 / Claude Code & 37.4 & 28.9--46.0 & 48/106 & 42/106 & 29/106 \\
+GPT-5.4 / OpenAI Codex & 36.8 & 28.5--45.1 & 52/106 & 37/106 & 28/106 \\
+Claude Opus 4.7 / Claude Code & 31.4 & 23.5--39.4 & 45/106 & 32/106 & 23/106 \\
+Claude Opus 4.7 / Pi & 31.1 & 23.2--39.1 & 44/106 & 33/106 & 22/106 \\
+Claude Opus 4.6 / Pi & 30.5 & 22.8--38.2 & 46/106 & 31/106 & 20/106 \\
+Gemini 3.5 Flash / Pi & 28.9 & 21.5--36.3 & 45/106 & 30/106 & 17/106 \\
+Claude Opus 4.6 / Claude Code & 27.7 & 20.7--34.6 & 48/106 & 26/106 & 14/106 \\
+Gemini 3.1 Pro / Pi & 27.4 & 19.9--34.9 & 41/106 & 28/106 & 18/106 \\
+Kimi K2P6 / Pi & 24.5 & 17.7--31.4 & 43/106 & 21/106 & 14/106 \\
+Claude Sonnet 4.6 / Pi & 22.6 & 15.6--29.7 & 35/106 & 22/106 & 15/106 \\
+Grok 4.20 reasoning / Pi & 22.3 & 15.7--28.9 & 38/106 & 22/106 & 11/106 \\
+Grok 4.3 / Pi & 12.6 & 6.9--18.2 & 20/106 & 12/106 & 8/106 \\
 \bottomrule
 \end{tabular}
 }
 
-\captionof{table}{\textbf{Deterministic final-answer performance.}
-Run-level pass rates are computed over the balanced updated manifest. Any,
-Majority, and All report evaluation-level replicate statistics over 106
-evaluations for each model-harness pair. Runtime and cost are treated as
+\captionof{table}{\textbf{Endpoint pass rates by model-harness pair.}
+Pass rates are computed over the balanced three-replicate result set. The 95\%
+CI is computed over per-evaluation replicate means. The last three columns
+report the number of evaluations, out of 106, with at least one, at least two,
+or all three replicate attempts passing. Runtime and cost are treated as
 operational diagnostics rather than leaderboard columns.}
 \label{tab:model-results}
 \end{center}
 
 \StartBody
 
-\subsection{Assay type separates endpoint performance}
+\subsection{Endpoint pass rates vary by assay type}
 
-Endpoint accuracy changed sharply across assays. ChIP-seq tasks had the
-highest run-level pass rate, with 241/480 passing attempts (50.2\%), followed
-by CUT\&Tag/CUT\&RUN at 768/2,256 (34.0\%), methylation-seq at 400/1,200
-(33.3\%), and ATAC-seq at 263/1,152 (22.8\%). The ChIP-seq estimate should be
-read cautiously because it comes from only 10 evaluations, but the aggregate
-pattern is still useful: agents are not failing epigenetics analysis
-uniformly. They are more reliable in some assay representations than in
-others.
+Endpoint pass rates differed by assay type. CUT\&Tag/CUT\&RUN had the highest
+aggregate pass rate at 34.0\%, followed by methylation-seq at 33.3\% and
+ChIP-seq at 30.6\%. ATAC-seq was lowest at 22.8\%. Thus, the
+largest separation was between ATAC-seq and the other assay families, rather
+than between a single high-performing assay and the rest of the benchmark.
 
-The assay differences reflect workflow conventions as much as biological
-domain. \new{ATAC-seq had the lowest aggregate pass rate (22.8\%), driven by two
-dominant failure modes: multi-omic integration tasks that require
-subtype-preserving RNA+ATAC pairing (75.8\% fail rate across 13 evaluations),
-and the Tn5 insertion-site convention where agents feed paired-end BAMs
-directly to MACS3 instead of extracting single-bp cut sites, producing
-$\sim$10$\times$ fewer peaks.} CUT\&Tag/CUT\&RUN occupied the middle
-of the distribution, with stronger performance on peak calling, annotation,
-and secondary analysis than on alignment or QC. Methylation-seq also sat near
-the middle overall, but it mixed relatively tractable annotation and secondary
-analysis tasks with brittle coverage, strand, and effect-size decisions.
-\new{ChIP-seq had the highest aggregate pass rate, but this reflects a bimodal
-distribution: A5 (69\%), E5 (65\%), and K2 (76\%) pass easily, while F2, H3,
-and L3 have 0\% pass rates across all models. The aggregate is driven by
-evaluations where the methodology is procedural rather than conceptual.
-ChIP-seq also represents a much smaller population compared to other assay
-types (10 evaluations vs 24--47).}
-
-The assay inventory is broad but not balanced. CUT\&Tag/CUT\&RUN contributes
-47 evaluations, methylation-seq 25, ATAC-seq 24, and ChIP-seq 10
-(Figure~\ref{fig:assay-summary}). We therefore use assay-level performance as
-the main result and use the assay-by-task matrix only as a diagnostic check on
-which assay-specific cells drive each aggregate estimate.
+The assay groups differed in both size and task composition. CUT\&Tag/CUT\&RUN
+contributed 47 evaluations, methylation-seq 25, ATAC-seq 24, and ChIP-seq 10,
+with different proportions of QC, peak calling, annotation, chromatin-state,
+and downstream-analysis tasks. Because assay type, source workflow, and task
+mix are coupled in this benchmark, we treat assay-level pass rates as
+descriptive summaries rather than controlled estimates of intrinsic assay
+difficulty.
 
 \EndBody
 
@@ -330,8 +325,8 @@ which assay-specific cells drive each aggregate estimate.
   \includegraphics[width=0.62\textwidth]{figures/fig5c.pdf}
 
   \captionof{figure}{\textbf{Performance varies by assay type.}
-  Panel A: run-level pass rate by assay type with Wilson confidence intervals
-  and passing-attempt counts. Panel B: assay-by-task-category pass-rate
+  Panel A: pass rate by assay type. Panel B:
+  assay-by-task-category pass-rate
   heatmap; cell text reports pass rate and the number of evaluations in that
   cell. Panel C: evaluation-count composition by assay type, showing the task
   mix behind each assay summary.}
@@ -340,106 +335,42 @@ which assay-specific cells drive each aggregate estimate.
 
 \StartBody
 
-\subsection{Endpoint failures often preserve partial work}
+\subsection{Many failures trace to plausible but wrong scientific choices}
 
-Replicate statistics separate reachable success from stable success. Averaged
-over model-harness pairs, agents passed at least one replicate on 44.2\% of
-evaluations, a majority of replicates on 32.5\%, and all three replicates on
-21.9\%. The leading GPT-5.5 / Pi run shows the same pattern: 61/106
-evaluations had at least one passing attempt, 52/106 had majority recovery,
-and only 38/106 passed all three attempts. A single passing trajectory
-therefore indicates reachable capability, but not repeatable operation.
+Endpoint failures clustered around decision points where a generic
+bioinformatics workflow diverged from the assay-specific evidence in the
+provided files. Manual review of 25 evaluations identified recurring errors in
+which statistic to rank, which threshold to apply, which biological unit should
+define the denominator, which file or feature namespace represented the signal,
+and when to trust file-derived evidence over familiar biological priors
+(Figure~\ref{fig:decision-traps}). These choices were often small in
+implementation terms, but they determined whether the final structured answer
+matched the data.
 
-Component scores explain much of this instability. Among 5,059 trajectories
-with component-field scores, endpoint pass/fail exactly matched whether every
-required field passed. Individual fields passed at 69.6\%, more than twice the
-32.9\% endpoint pass rate. The hardest evaluations were not uniformly blank
-failures: 21 evaluations had no passing attempts, but 17 of those had nonzero
-mean grader scores and 9 had field-level pass rates of at least 50\%. Agents
-often recovered the right evidence or an adjacent statistic, then missed one
-required field, comparator, denominator, or answer-surface constraint.
+Component-level grading supported the same interpretation. Among 5,051
+trajectories with field-level grader scores, individual required fields passed
+68.2\% of the time, compared with a 31.0\% endpoint pass rate. The gap indicates
+that many failed endpoints contained some correct pieces, but missed the exact
+data layer, statistical choice, biological unit, or interpretation field
+required by the task.
 
-This pattern is not primarily explained by execution crashes. No parsed
-trajectory reported a timeout or detected out-of-memory event. Recorded
-runtimes varied widely (median 506 seconds; 90th percentile 2,351 seconds),
-but the dominant error mode in this manifest is a brittle final analysis
-decision rather than an inability to run code.
+Examples span the assay families. In CUT\&RUN spike-in normalization, choosing
+Bowtie2 end-to-end alignment rather than local alignment reduced spike-in
+recovery and distorted downstream normalization. In WGBS outputs, treating the
+two Bismark rows for a CpG dinucleotide as independent sites changed coverage
+and differential-methylation statistics. In ATAC-seq, using paired-end BAMs
+directly with MACS3 \texttt{-f BAMPE} bypassed the intended single-base Tn5
+insertion-site representation, shifting peak calls and downstream motif or
+integration results. In interpretation tasks, agents sometimes substituted a
+literature-derived mechanism for the comparison supported by the files.
 
-\EndBody
-
-\begin{center}
-  \includegraphics[width=0.38\textwidth]{figures/fig6a.pdf}\hfill
-  \includegraphics[width=0.58\textwidth]{figures/fig6b.pdf}
-
-  \captionof{figure}{\textbf{Endpoint failures contain substantial partial
-  progress.} Panel A: endpoint and component-field pass rates by assay type.
-  Panel B: evaluation-level difficulty spectrum, with endpoint and field-level
-  pass rates for each evaluation. Field scores are diagnostics, not replacement
-  benchmark scores.}
-  \label{fig:partial-credit-failure-diagnostics}
-\end{center}
-
-\StartBody
-
-\subsection{Errors trace to assay-specific choices}
-
-Manual review localizes endpoint misses to concrete analysis decisions. \new{Review
-coverage spans 25/106 evaluations, and evaluations carry multiple trap labels
-because a single task can test several decision points---although each eval
-concretely tests a single skill. Within the reviewed subset, we identify five
-recurring error families: prior-driven assertion---substituting textbook
-biology for computation (10 evaluations; 48.0\% aggregate fail rate, ranging
-from 0\% to 100\% per eval); depth or normalization confounding---equalizing
-after feature detection rather than before (7 evaluations; 67.2\%); format or
-mode selection---the same tool flag producing opposite errors depending on
-assay context (4 evaluations; 65.9\%); signal source substitution---choosing
-the wrong enrichment column or coverage track (4 evaluations; 91.1\%); and
-strand or context mishandling in bisulfite data (7 evaluations; 99.0\%).}
-These are not generic reasoning failures. They are local choices about which
-parameter, data layer, or biological prior should control the final answer.
-
-The reviewed traps also explain why evaluation difficulty is correlated.
-One missing assay convention can sink several tasks at once. In CUT\&RUN
-spike-in normalization, choosing Bowtie2 end-to-end alignment instead of the
-appropriate local mode can discard most contaminated spike-in reads and
-corrupt every downstream normalization result. In WGBS outputs, failing to
-merge the two Bismark rows representing one CpG dinucleotide changes coverage
-and downstream differential-methylation calls. In ATAC-seq, feeding paired-end
-BAMs directly to MACS3 with \texttt{-f BAMPE} can replace the intended Tn5
-insertion-site workflow and propagate into peak, motif, and integration
-analyses. \new{A vast majority of the times, the agents got the tools correct, 
-but the exact specifics of the parameters that would help identify biologically 
-sensible answers were missing, and these were precisely the elements that the benchmark 
-is designed to test.}
-
-Prior-driven assertion is a separate recurring pattern. Agents sometimes
-substitute well-known regulatory biology for the calculation supported by the
-provided files: promoter methylation instead of the requested gene-body
-comparison, canonical driver genes instead of the computed enhancer ranking,
-or differentiated-cell references instead of the stem-cell reference required
-for a Polycomb methylation enrichment.
-
-\new{The strongest evidence that the benchmark measures judgment rather than
-computation comes from trajectories where agents computed the correct answer
-and then discarded it. Detailed trajectory review of the ceiling model
-(GPT-5.5) across CUT\&Tag/CUT\&RUN (53 evaluations) and methylation-seq (25
-evaluations) identified this ``explore-then-retreat'' pattern in 7
-evaluations (9.0\% of 78 reviewed): in each case, at least one trajectory
-obtained the correct value or parameter setting, then deliberately revised to
-a more familiar alternative before submitting. The revisions moved toward
-end-to-end alignment defaults, array-era effect-size thresholds, textbook
-biological interpretations, or externally-sourced annotations --- generic
-workflow conventions rather than the assay-specific choice supported by the
-data. In 4 of these 7 evaluations, the correct answer was visible in the
-agent's own computational output before it was overridden. This pattern is
-distinct from prior-driven assertion (where agents never compute the correct
-answer) and confirms that the discriminating barrier at the frontier is not
-tool invocation or arithmetic but the confidence to commit to an unfamiliar,
-data-supported result.}
-
-These examples frame the benchmark's core measurement target: not whether an
-agent can invoke bioinformatics tools, but whether it can commit to the
-assay-specific decision that makes the computed result verifiable.
+A related pattern appeared when agents computed the correct result but did not
+submit it. Across reviewed GPT-5.5 trajectories for CUT\&Tag/CUT\&RUN and
+methylation-seq, this occurred in seven evaluations; in four of those, the
+correct answer was visible in the agent's own output before being replaced by a
+more familiar workflow default or biological expectation. These cases separate
+tool execution from scientific judgment: the result was available, but the
+agent selected the less supported answer.
 
 \EndBody
 
@@ -450,13 +381,12 @@ assay-specific decision that makes the computed result verifiable.
 
   \includegraphics[width=0.92\textwidth]{figures/fig7b.pdf}
 
-  \captionof{figure}{\textbf{Reviewed failures concentrate in assay-specific
-  decision traps.} Panel A: frequency and severity of recurring error types
-  from manual review; each point is an error type, with lower pass rates
-  indicating harder traps. Panel B: representative assay decisions showing how
-  a local shortcut can propagate into downstream endpoint failure. Manual
-  review covers 25/106 evaluations and should be interpreted as diagnostic
-  rather than exhaustive.}
+  \captionof{figure}{\textbf{Many failures trace to plausible but wrong
+  scientific choices.} Panel A summarizes recurring labels from manual review. The
+  x-axis counts reviewed evaluations carrying each label; lower y-values mark
+  labels associated with lower endpoint pass rates. Panel B gives representative
+  assay choices where a plausible default changed the endpoint answer. Manual
+  review covers 25/106 evaluations and is diagnostic rather than exhaustive.}
   \label{fig:decision-traps}
 \end{center}
 
@@ -464,70 +394,34 @@ assay-specific decision that makes the computed result verifiable.
 
 \section{Discussion}
 
-The short-horizon epigenomics benchmark occupies a middle ground between
-localized workflow execution and long-horizon scientific reasoning. It is
-narrower than SpatialBench-Long because each task targets a focused result,
-but it is more empirical than biological question answering because the answer
-depends on interacting with real assay outputs.
+EpiBench is designed around a practical question: can an agent recover a
+specific empirical result from epigenomics artifacts immediately upstream of
+that result? The tasks are short, but the decisions are not trivial. Assay
+representation, normalization state, genomic unit, comparator choice, and
+answer surface can determine whether the submitted answer matches the
+supported biological conclusion.
 
-The main result is not that agents fail universally. Leading systems recover
-roughly half of available endpoint answers, and many failures show substantial
-component-level progress. The limitation is reliability: even strong
-model-harness pairs remain sensitive to representation, metric definition,
-and comparator choice. These are precisely the local decisions that determine
-whether an epigenomics analysis is trustworthy. \new{Another point worth noting is that,
-for 44.2\% of the evalutations across all model + harness pairs, the agent was able to pass
-atleast one of the three replicates, suggesting that thr agents often lack conviction with regards 
-to telling the difference between a correct vs incorrect answer.}
+The results show that these local decisions remain unreliable. The strongest
+model-harness pair passed 45.0\% of endpoint attempts, and many failures
+occurred despite partial progress. Field-level scores and trajectory review
+suggest that agents often found relevant files or computed useful intermediate
+values, but then selected a familiar workflow default, literature-derived
+mechanism, or nearby statistic that was not supported by the provided data.
+This separates tool use from scientific judgment: the agent can run the
+workflow and still submit the wrong biological result.
 
-\new{The trap taxonomy clarifies what the benchmark measures. Agents can run
-Bowtie2, MACS2, Picard, and HOMER correctly --- they fail at choosing
-\texttt{--local} vs \texttt{end-to-end} for spike-in alignment,
-\texttt{-f BAMPE} vs Tn5 insertion-site BED for ATAC-seq peak calling,
-\texttt{--broad} vs narrow for domain-spanning marks, or pre- vs
-post-peak-calling depth equalization.
-The bottleneck is domain-specific parameter selection that requires
-understanding \emph{why} the tool behaves differently for a given mark or
-assay, not \emph{how} to invoke it. This positions the benchmark as a test of
-scientific judgment rather than tool proficiency.}
-
-\new{Three cross-assay failure patterns generalize beyond epigenomics: (1)
-prior-driven assertion --- asserting from training data rather than computing
-from provided files; (2) depth and normalization confounding --- equalizing
-after feature detection rather than before; and (3) format/mode selection ---
-the same tool flag producing opposite errors depending on assay context
-(e.g., \texttt{-f BAMPE} inflates CUT\&Tag peaks by 25--75\% but deflates
-ATAC-seq peaks by $\sim$10$\times$). These are not epigenomics-specific;
-any scientific benchmark involving bioinformatics tools will encounter agents
-that know tool syntax but not parameter semantics.}
-
-\new{The progressive-difficulty design is validated by the failure
-distribution. Of 106 evaluations, 21 have 0\% pass rates across all 16
-model-harness pairs---these are dominated by strand-merging catastrophes,
-multi-omic integration, and signal-source traps where no current agent
-overcomes the underlying scientific-judgment barrier. At the other extreme,
-GPT-5.5 / Pi passes 38/106 evaluations on all three replicates, indicating
-stable mastery of procedural tasks. The middle band (30--50\% pass at the
-leading model) concentrates in discriminative traps---spike-in alignment
-mode, depth confounding, and prior-driven assertion---where the ceiling
-model sometimes computes the correct answer but discards it in favor of a
-more familiar alternative.}
-
-The benchmark has several limitations. The updated manifest is balanced across
+The benchmark has several limitations. The result set is balanced across
 model-harness pairs, but the task inventory is not balanced across assay
 families: CUT\&Tag/CUT\&RUN (47 evaluations) and methylation-seq (25)
-contribute more evaluations than ChIP-seq (10), and secondary analysis plus
-QC tasks dominate the inventory. \new{The
-correlation structure of trap clusters means aggregate scores partially
-reflect repeated tests of the same underlying decision; this mirrors real
-workflow failure modes but should be acknowledged when interpreting
-per-evaluation independence.} Also, deterministic graders intentionally
-constrain the answer surface; they are useful for measurement, but they do not
-capture every scientifically valid analysis path. \new{Additionally, the benchamrk is 
-also tests specific scientific skills as opposed to general epigenetics reasoning skills. 
-We also worked with a sample of epigenetic tests and we believe we have only scratched the 
-surface of problems that can be tested with the benchmark and we plan to certainly 
-expand to other assay types and analysis tasks.}
+contribute more evaluations than ATAC-seq (24) or ChIP-seq (10), and
+downstream analysis plus QC tasks dominate the inventory. Some failure labels
+also recur across related evaluations, so aggregate scores partially reflect
+repeated tests of the same underlying decision. This mirrors real workflow
+failure modes, but it should temper per-evaluation independence claims.
+Finally, deterministic graders intentionally constrain the answer surface;
+they are useful for measurement, but they do not capture every scientifically
+valid analysis path. EpiBench therefore tests a defined sample of practical
+epigenomics skills, not general epigenomics reasoning in full.
 
 
 
@@ -546,33 +440,32 @@ unsupported biological output.
 \subsection{Agent runs and aggregation}
 
 Each model-harness pair was run with up to three replicates per evaluation.
-The updated manifest used here is
-\texttt{epibench\_manifest\_updated.csv}; the full SHA-256 hash is recorded in
-the derived summary facts table.
-All 5,088 listed result JSONs were downloaded and parsed successfully. The
-manifest contains a complete three-replicate design for 106 evaluations and
+All 5,088 trajectory outputs were downloaded and parsed successfully. The
+result set contains a complete three-replicate design for 106 evaluations and
 16 model-harness pairs. Failed, malformed, or nonpassing endpoint grader
-outputs are counted as nonpassing attempts when present; no downloaded result
-JSON was missing or invalid in this analysis.
+outputs are counted as nonpassing attempts when present; no downloaded output
+was missing or invalid in this analysis. Component field scores were
+available for 5,051 trajectories and are analyzed only as diagnostics.
 
 \subsection{Statistical analysis}
 
-The primary metric is run-level pass rate. Wilson binomial confidence
-intervals summarize run-level uncertainty and do not account for
-evaluation-level clustering. We therefore also report evaluation-level
+The primary metric is evaluation-weighted endpoint pass rate. For each
+model-harness pair and evaluation, we first compute the mean pass rate across
+the three replicates, then report the mean across evaluations. Because the
+result set is balanced, this estimate is numerically identical to the
+raw run-level pass rate. Confidence intervals use the Student $t$ distribution
+over per-evaluation replicate means, matching the SpatialBench aggregation
+convention \cite{workman2025spatialbench}. We also report evaluation-level
 replicate summaries: whether a model-harness pair passed any attempt, a
-majority of attempts, or all three attempts for an evaluation. Because the
-updated manifest is balanced, run-level and balanced-design summaries are
-identical. Component field scores and failure-mode labels are reported as
-diagnostics rather than benchmark scores.
+majority of attempts, or all three attempts for an evaluation. Component field
+scores and failure-mode labels are reported as diagnostics rather than
+benchmark scores.
 
 \section*{Data availability}
 
 Results files, public example evaluations, and representative trajectories
 will be made available at
-\url{https://github.com/latchbio/epigenetics-short-horizon-benchmark}. The
-derived summary tables used for this manuscript are in
-\texttt{analysis\_outputs/epi\_manifest\_updated\_summary/}.
+\url{https://github.com/latchbio/epibench}.
 
 \input{references}
 

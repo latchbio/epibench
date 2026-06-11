@@ -12,3 +12,5 @@ __pycache__/
 analysis_outputs/*
 !analysis_outputs/epi_manifest_updated_summary/
 !analysis_outputs/epi_manifest_updated_summary/**
+
+.*sw*
