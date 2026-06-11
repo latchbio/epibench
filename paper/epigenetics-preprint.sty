@@ -2,21 +2,12 @@
 \ProvidesPackage{epigenetics-preprint}[2026/06/05 Epigenetics benchmark preprint template]
 
 \RequirePackage[letterpaper,left=0.58in,right=0.58in,top=0.46in,bottom=0.58in]{geometry}
-\RequirePackage{iftex}
 \RequirePackage{fix-cm}
-\ifPDFTeX
-  \RequirePackage[T1]{fontenc}
-  \RequirePackage[utf8]{inputenc}
-  \RequirePackage{tgpagella}
-  \RequirePackage[scaled=0.90]{beramono}
-\else
-  \RequirePackage{fontspec}
-\fi
-\ifPDFTeX
-  \RequirePackage{microtype}
-\else
-  \RequirePackage[protrusion=false,expansion=false]{microtype}
-\fi
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{tgpagella}
+\RequirePackage[scaled=0.90]{beramono}
+\RequirePackage{microtype}
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{tikz}
@@ -28,37 +19,6 @@
 \RequirePackage{array}
 \RequirePackage{hyperref}
 \RequirePackage{ragged2e}
-
-\ifPDFTeX
-\else
-  \IfFileExists{/Users/kenny/Library/Fonts/bitstream-iowan-old-style-bt-586c36a8d7712.ttf}{
-    \setmainfont[
-      Path=/Users/kenny/Library/Fonts/,
-      UprightFont=bitstream-iowan-old-style-bt-586c36a8d7712.ttf,
-      BoldFont=bitstream-iowan-old-style-bold-bt-586c371d8d669.ttf,
-      ItalicFont=bitstream-iowan-old-style-italic-bt-586c3740dc396.ttf,
-      BoldItalicFont=bitstream-iowan-old-style-bold-italic-bt-586c37701cb62.ttf
-    ]{Iowan Old Style BT}
-    \setsansfont[
-      Path=/Users/kenny/Library/Fonts/,
-      UprightFont=bitstream-iowan-old-style-bt-586c36a8d7712.ttf,
-      BoldFont=bitstream-iowan-old-style-bold-bt-586c371d8d669.ttf,
-      ItalicFont=bitstream-iowan-old-style-italic-bt-586c3740dc396.ttf,
-      BoldItalicFont=bitstream-iowan-old-style-bold-italic-bt-586c37701cb62.ttf
-    ]{Iowan Old Style BT}
-  }{
-    % Fallback: skip custom fonts, use defaults
-  }
-  \IfFileExists{/Applications/Cursor.app/Contents/Resources/app/out/media/jetbrains-mono-regular.ttf}{
-    \setmonofont[
-      Path=/Applications/Cursor.app/Contents/Resources/app/out/media/,
-      UprightFont=jetbrains-mono-regular.ttf,
-      Scale=MatchLowercase
-    ]{JetBrains Mono}
-  }{
-    \setmonofont[Scale=MatchLowercase]{Latin Modern Mono}
-  }
-\fi
 
 \definecolor{ink}{HTML}{15191F}
 \definecolor{muted}{HTML}{5F6872}
@@ -207,4 +167,3 @@
     ] {#2};
   \end{tikzpicture}
 }
-
