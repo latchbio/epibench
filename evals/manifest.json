@@ -1,0 +1,32 @@
+{
+  "evals": [
+    {
+      "id": "gse149608_c3_enhancer_methylation",
+      "path": "evals/gse149608_c3_enhancer_methylation/eval.json"
+    },
+    {
+      "id": "gse149608_wnt2_promoter_genome_build",
+      "path": "evals/gse149608_wnt2_promoter_genome_build/eval.json"
+    },
+    {
+      "id": "zebrafish_014g_h2az_bivalent_promoters",
+      "path": "evals/zebrafish_014g_h2az_bivalent_promoters/eval.json"
+    },
+    {
+      "id": "zebrafish_009c_cutnrun_vs_chip_h3k9me3",
+      "path": "evals/zebrafish_009c_cutnrun_vs_chip_h3k9me3/eval.json"
+    },
+    {
+      "id": "chipseq_K2",
+      "path": "evals/chipseq_K2/eval.json"
+    },
+    {
+      "id": "cold_03b",
+      "path": "evals/cold_03b/eval.json"
+    },
+    {
+      "id": "atac_1a",
+      "path": "evals/atac_1a/eval.json"
+    }
+  ]
+}
