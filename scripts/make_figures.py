@@ -731,6 +731,170 @@ def fig_supp_cost() -> None:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# FIGURE: Failure divergence across models
+# ═══════════════════════════════════════════════════════════════════════════════
+
+RUN_RESULTS = DATA / "run_results.csv"
+
+# An eval is "solved" by a model under one of three thresholds:
+#   "any"      -> at least 1 of its 3 attempts passed (>=1/3; permissive)
+#   "majority" -> a majority (>=2/3) of attempts passed
+#   "all"      -> every attempt passed (3/3; conservative)
+DIVERGENCE_THRESHOLD = "any"
+
+# Oracle-curve definitions shown together (permissive vs conservative bounds).
+ORACLE_CURVES = [
+    ("any", "solved if ≥1/3 attempts pass", ACCENT),
+    ("all", "solved if 3/3 attempts pass", TEAL_DARK),
+]
+
+
+def _load_runs() -> pd.DataFrame:
+    """Load the per-run pass/fail table (one row per model x eval x replicate)."""
+    df = pd.read_csv(RUN_RESULTS)
+    df["passed"] = df["passed"].astype(str).str.lower().isin(["true", "1", "1.0", "yes", "t"])
+    return df
+
+
+def _solved_matrix(df: pd.DataFrame, threshold: str) -> pd.DataFrame:
+    """Boolean eval x model matrix of whether each model solves each eval."""
+    g = df.groupby(["model_harness", "eval_name"])["passed"].agg(n_pass="sum", n_att="size").reset_index()
+    if threshold == "all":
+        g["solved"] = g["n_pass"] >= g["n_att"]
+    elif threshold == "majority":
+        g["solved"] = g["n_pass"] / g["n_att"] >= 0.5
+    else:  # "any"
+        g["solved"] = g["n_pass"] >= 1
+    return g.pivot(index="eval_name", columns="model_harness", values="solved").fillna(False)
+
+
+def oracle_curve(df: pd.DataFrame, threshold: str, n_random: int = 400, seed: int = 0):
+    """Model-pooling coverage curves.
+
+    Returns (greedy, random_mean, best, union, saturation):
+      greedy[k]      -- fraction of evals solved by >=1 of the (k+1) best-first models
+      random_mean[k] -- same, averaged over random model orderings
+      best           -- single best model's solve fraction (greedy[0])
+      union          -- fraction solved by >=1 of all models (greedy[-1])
+      saturation     -- smallest pool size that reaches the union
+    """
+    mat = _solved_matrix(df, threshold)
+    n_evals = len(mat)
+    models = list(mat.columns)
+    solved = {m: set(mat.index[mat[m]]) for m in models}
+
+    remaining, covered, greedy = set(models), set(), []
+    while remaining:
+        nxt = max(remaining, key=lambda m: len(solved[m] - covered))
+        covered |= solved[nxt]
+        remaining.discard(nxt)
+        greedy.append(len(covered) / n_evals)
+
+    rng = np.random.default_rng(seed)
+    order = np.array(models, dtype=object)
+    rand = np.zeros((n_random, len(models)))
+    for r in range(n_random):
+        rng.shuffle(order)
+        cov = set()
+        for k, m in enumerate(order):
+            cov |= solved[m]
+            rand[r, k] = len(cov) / n_evals
+    random_mean = rand.mean(axis=0)
+
+    union = greedy[-1]
+    saturation = next(k + 1 for k, v in enumerate(greedy) if abs(v - union) < 1e-9)
+    return np.array(greedy), random_mean, float(greedy[0]), float(union), saturation
+
+
+def divergence_tables(df: pd.DataFrame, threshold: str = DIVERGENCE_THRESHOLD):
+    """Per-eval model-coverage and divergence metrics.
+
+    Returns (coverage, per_model_solved, metrics) where coverage is a Series
+    indexed by eval_name giving how many models solve it, per_model_solved maps
+    model_harness -> set(evals solved), and metrics is a summary dict.
+    """
+    import itertools
+
+    mat = _solved_matrix(df, threshold)
+    models = list(mat.columns)
+    evals = list(mat.index)
+    n_models, n_evals = len(models), len(evals)
+
+    coverage = mat.sum(axis=1).astype(int)
+    per_model = {m: set(mat.index[mat[m]]) for m in models}
+    fail_sets = {m: set(evals) - per_model[m] for m in models}
+
+    def mean_jaccard(sets: dict) -> float:
+        vals = []
+        for a, b in itertools.combinations(models, 2):
+            union = sets[a] | sets[b]
+            vals.append(len(sets[a] & sets[b]) / len(union) if union else 1.0)
+        return float(np.mean(vals)) if vals else float("nan")
+
+    ranked = sorted(((len(s), m) for m, s in per_model.items()), reverse=True)
+    metrics = {
+        "threshold": threshold,
+        "n_evals": n_evals,
+        "n_models": n_models,
+        "union": int((coverage >= 1).sum()),
+        "universal_fail": int((coverage == 0).sum()),
+        "solved_by_all": int((coverage == n_models).sum()),
+        "best_model": ranked[0][1],
+        "best_solved": ranked[0][0],
+        "mean_jaccard_solved": mean_jaccard(per_model),
+        "mean_jaccard_failed": mean_jaccard(fail_sets),
+        "coverage_hist": {int(k): int(v) for k, v in coverage.value_counts().sort_index().items()},
+    }
+    return coverage, per_model, metrics
+
+
+def fig_divergence_a() -> None:
+    """Divergence: oracle model-pooling curve (permissive >=1/3 vs conservative 3/3).
+
+    Greedy best-first curve (solid) and random-order mean (dashed) for each
+    threshold; the dotted line marks each threshold's best single model.
+    """
+    df = _load_runs()
+    n_models = df["model_harness"].nunique()
+
+    fig, ax = plt.subplots(figsize=(4.8, 3.0))
+    for thr, label, color in ORACLE_CURVES:
+        greedy, rmean, best, union, sat = oracle_curve(df, thr)
+        x = np.arange(1, len(greedy) + 1)
+        ax.plot(x, rmean, ls=(0, (4, 2)), lw=1.0, color=color, alpha=0.85, zorder=3)
+        ax.plot(x, greedy, "-o", lw=1.6, ms=2.8, color=color, zorder=4, label=label)
+        ax.scatter([1, len(greedy)], [best, union], s=15, color=color, zorder=5)
+        # best single (curve start) and union (curve end) labelled directly off their markers
+        best_y = best + 0.028 if thr == "any" else best - 0.052
+        ax.annotate(f"{best * 100:.0f}%", (1, best), (0.32, best_y), ha="left",
+                    fontproperties=MONO, fontsize=5.8, color=color)
+        ax.annotate(f"union {union * 100:.0f}%", (len(greedy), union), (len(greedy) - 4.7, union + 0.028),
+                    fontproperties=MONO, fontsize=5.8, color=color)
+
+    clean(ax, y_grid=True)
+    ax.xaxis.grid(False)
+    ax.set_xlim(0.0, n_models + 0.4)
+    ax.set_ylim(0.15, 0.85)
+    ax.set_yticks(np.arange(0.20, 0.801, 0.10))
+    ax.set_xticks(range(0, n_models + 1, 2))
+    for lab in ax.get_xticklabels():
+        lab.set_fontproperties(SERIF)
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, pos: f"{v * 100:.0f}%"))
+    ax.set_xlabel("Models pooled", fontproperties=SERIF, fontsize=7.5)
+    ax.set_ylabel("Evaluations solved", fontproperties=SERIF, fontsize=7.5)
+    # Left-aligned text legend: color encodes the threshold; note below explains line style.
+    legend_left, legend_top, line_h = 0.55, 0.42, 0.052
+    for i, (thr, label, color) in enumerate(ORACLE_CURVES):
+        ax.text(legend_left, legend_top - i * line_h, label, transform=ax.transAxes,
+                ha="left", va="top", fontproperties=serif_prop(6.2, bold=True), color=color)
+    ax.text(legend_left, legend_top - len(ORACLE_CURVES) * line_h - 0.012,
+            "solid: best-first pooling\ndashed: random-order mean", transform=ax.transAxes,
+            ha="left", va="top", fontproperties=serif_prop(6.2), color=TEXT, linespacing=1.5)
+    fig.tight_layout()
+    save_all(fig, "fig_divergence_a")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Main
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -759,6 +923,12 @@ def main() -> None:
 
     # Supplemental
     fig_supp_cost()
+
+    # Failure divergence across models (requires run_results.csv)
+    if RUN_RESULTS.exists():
+        fig_divergence_a()
+    else:
+        print(f"  Skipped divergence figure: {RUN_RESULTS} not found")
 
     print(f"\nAll figures saved to: {FIGURES}")
 
