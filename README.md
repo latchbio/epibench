@@ -16,9 +16,6 @@ Preprint PDF: [`paper/main.pdf`](paper/main.pdf).
 ## Current Release
 
 - `evals/`: seven public example evaluations with prompt/config metadata.
-- `analysis_outputs/epibench_manifest_updated_summary/`: derived summary tables
-  for the 106-evaluation result set used in the manuscript; raw trajectory
-  caches are not included.
 - `paper/`: manuscript source, figures, and compiled PDF.
 - `scripts/`: utilities for downloading manifest data, regenerating summary
   tables, and rebuilding paper figures.
