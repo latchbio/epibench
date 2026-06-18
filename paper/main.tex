@@ -322,6 +322,34 @@ operational diagnostics rather than leaderboard columns.}
 
 \StartBody
 
+\subsection{Failures vary across models}
+
+Although no model-harness pair passes half of the evaluations, which evaluations
+are solved varies considerably across models. The best single model solves 55\%
+of evaluations (passing at least one of three attempts), yet the union of
+evaluations solved by at least one model reaches 77\%
+(Figure~\ref{fig:divergence}); only 4\% are solved by all 16 systems and 23\% by
+none, leaving a majority that some models solve and others miss. The pattern
+holds under a strict all-three-attempts criterion (best 34\%, union 56\%), and
+best-first pooling saturates after roughly eight models. Aggregate pass rates
+therefore understate the collective capability frontier.
+
+\EndBody
+
+\begin{center}
+  \includegraphics[width=0.82\textwidth]{figures/fig_divergence_a.pdf}
+
+  \captionof{figure}{\textbf{Failures vary across models.} Oracle
+  model-pooling coverage: the fraction of the 106 evaluations solved by at least
+  one of the $k$ best-first-selected models, under two definitions of
+  ``solved'' (at least one of three attempts, vs all three). Solid: best-first
+  pooling; dashed: random-order mean. The gap between the best single model and
+  the union of all models reflects divergent rather than shared failures.}
+  \label{fig:divergence}
+\end{center}
+
+\StartBody
+
 \subsection{Endpoint pass rates vary by assay type}
 
 CUT\&Tag/CUT\&RUN had the highest aggregate pass rate at 34.0\% (768/2,256
