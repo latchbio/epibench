@@ -190,7 +190,7 @@ outputs.
 \begin{multicols}{2}
 The benchmark covers four assay types and eight task categories.
 CUT\&Tag/CUT\&RUN tasks are drawn from zebrafish chromatin workflow snapshots
-and span chromatin state analysis, QC, peak calling, downstream analysis,
+(GSE178343) \cite{akdogan2022zebrafish} and span chromatin state analysis, QC, peak calling, downstream analysis,
 genomic annotation, alignment, and visualization. ATAC-seq tasks use pediatric
 B-ALL ATAC/RNA data from GSE161501 and related integrative workflow
 artifacts \cite{diedrich2021allatac}, with downstream analysis dominating.
@@ -225,7 +225,7 @@ Assay type & Evals & Source data & Task categories \\
 \midrule
 CUT\&Tag/CUT\&RUN &
 47 &
-Zebrafish chromatin workflow snapshots &
+Zebrafish chromatin workflow snapshots (GSE178343) &
 Chromatin state (12), QC (10), peak calling (9), downstream analysis (7), genomic annotation (5), alignment (3), visualization (1) \\
 \addlinespace
 ATAC-seq &
@@ -432,7 +432,8 @@ often found relevant files or computed useful intermediate values, but then
 selected a familiar workflow default, literature-derived mechanism, or nearby
 statistic that was not supported by the provided evidence. This separates
 execution from judgment: an agent can operate the tools of an epigenomics
-workflow and still submit the wrong biological answer.
+workflow and still submit the wrong biological answer. Concurrent work on
+agentic biological discovery reports the same pattern \cite{johri2026m3a}.
 
 The benchmark has several limitations. The task inventory is not balanced
 across assay families: CUT\&Tag/CUT\&RUN (47 evaluations) and methylation-seq
