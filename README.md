@@ -44,6 +44,10 @@ python scripts/make_figures.py
 The paper source is pdfLaTeX-compatible and uses an inline `references.tex`
 bibliography.
 
+## Updated leaderboard
+
+For results from newer model-and-harness evaluations, see the [EpiBench leaderboard](https://benchmarks.bio/epibench), part of the [benchmarks.bio](https://benchmarks.bio/) suite.
+
 ## Citation
 
 ```bibtex
